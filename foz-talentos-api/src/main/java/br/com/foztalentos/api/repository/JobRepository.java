@@ -8,10 +8,4 @@ import java.util.List;
 
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
 
-    List<Job> findByActiveTrue();
-    List<Job> findByCategoryId(Long id);
-    List<Job> findByState(String state);
-    List<Job> findByTitleContainingIgnoreCase(String title);
-
-
 }

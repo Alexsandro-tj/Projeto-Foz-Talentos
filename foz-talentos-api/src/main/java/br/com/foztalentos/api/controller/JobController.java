@@ -7,11 +7,13 @@ import br.com.foztalentos.api.dto.job.JobResponseDTO;
 import br.com.foztalentos.api.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping(ApiRoutes.JOBS)
@@ -21,8 +23,8 @@ public class JobController {
         private final JobService jobService;
 
         @GetMapping
-        public ResponseEntity<List<JobResponseDTO>> findAll() {
-            List<JobResponseDTO> jobs = jobService.findAll();
+        public ResponseEntity<Page<JobResponseDTO>> findAll(Pageable pageable) {
+            Page<JobResponseDTO> jobs = jobService.findAll(pageable);
             return ResponseEntity.ok(jobs);
         }
 
@@ -32,13 +34,14 @@ public class JobController {
         }
 
         @GetMapping("/filter")
-        public ResponseEntity<List<JobResponseDTO>> filter(@ModelAttribute JobFilterDTO filter) {
+        public ResponseEntity<Page<JobResponseDTO>> filter(@ModelAttribute JobFilterDTO filter, Pageable pageable) {
 
-            return ResponseEntity.ok(jobService.filter(filter));
+            return ResponseEntity.ok(jobService.filter(filter, pageable));
 
         }
 
         @PostMapping
+        @PreAuthorize("hasAnyRole('MASTER','EMPLOYEE')")
         public ResponseEntity<JobResponseDTO> create(@Valid @RequestBody JobRequestDTO request) {
 
             JobResponseDTO savedJob = jobService.create(request);
@@ -47,9 +50,8 @@ public class JobController {
         }
 
         @PutMapping("/{id}")
-        public ResponseEntity<JobResponseDTO> update(
-                @PathVariable Long id,
-                @Valid @RequestBody JobRequestDTO request) {
+        @PreAuthorize("hasAnyRole('MASTER','EMPLOYEE')")
+        public ResponseEntity<JobResponseDTO> update(@PathVariable Long id, @Valid @RequestBody JobRequestDTO request) {
 
             JobResponseDTO updatedJob = jobService.update(id, request);
 
@@ -57,6 +59,7 @@ public class JobController {
         }
 
         @PatchMapping("/{id}/deactivate")
+        @PreAuthorize("hasAnyRole('MASTER','EMPLOYEE')")
         public ResponseEntity<Void> deactivate(@PathVariable Long id) {
             jobService.deactivate(id);
             return ResponseEntity.noContent().build();

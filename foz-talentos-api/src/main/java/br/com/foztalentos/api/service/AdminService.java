@@ -7,11 +7,12 @@ import br.com.foztalentos.api.exception.BusinessException;
 import br.com.foztalentos.api.exception.ResourceNotFoundException;
 import br.com.foztalentos.api.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class AdminService {
     public AdminResponseDTO create(AdminRequestDTO request) {
 
         Admin admin = new Admin();
+
 
         admin.setName(request.name());
         admin.setEmail(request.email());
@@ -41,19 +43,16 @@ public class AdminService {
         return toResponseDTO(savedAdmin);
     }
 
-    public List<AdminResponseDTO> findAll() {
+    public Page<AdminResponseDTO> findAll(Pageable pageable) {
 
-        return adminRepository.findAll()
-                .stream()
-                .map(this::toResponseDTO)
-                .toList();
+        return adminRepository.findAll(pageable).map(this::toResponseDTO);
 
     }
 
     public AdminResponseDTO findById(Long id) {
 
-        Admin admin = adminRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found."));
+        Admin admin = adminRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Admin not found."));
 
         return toResponseDTO(admin);
 
@@ -64,9 +63,14 @@ public class AdminService {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Admin not found."));
 
+        Admin existing = adminRepository.findByEmail(request.email())
+                .orElse(null);
+
+        if(existing != null && !existing.getId().equals(id)){
+            throw new BusinessException("Email already registered.");
+        }
         admin.setName(request.name());
         admin.setEmail(request.email());
-        admin.setPassword(request.password());
         admin.setUpdatedAt(LocalDateTime.now());
 
         if (request.password() != null && !request.password().isBlank()) {

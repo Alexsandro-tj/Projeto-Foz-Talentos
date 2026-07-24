@@ -7,10 +7,11 @@ import br.com.foztalentos.api.exception.BusinessException;
 import br.com.foztalentos.api.exception.ResourceNotFoundException;
 import br.com.foztalentos.api.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,17 +32,15 @@ public class CategoryService {
             throw new BusinessException("Category already exists");
         }
 
+
         Category savedCategory = categoryRepository.save(category);
 
         return toResponseDTO(savedCategory);
 
     }
 
-    public List<CategoryResponseDTO> findAll() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(this::toResponseDTO)
-                .toList();
+    public Page<CategoryResponseDTO> findAll(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(this::toResponseDTO);
     }
 
     public CategoryResponseDTO findById(Long id) {
@@ -54,6 +53,14 @@ public class CategoryService {
     public CategoryResponseDTO update(Long id, CategoryRequestDTO request) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found."));
+
+        Category existing = categoryRepository
+                .findByNameIgnoreCase(request.name())
+                .orElse(null);
+
+        if (existing != null && !existing.getId().equals(id)) {
+            throw new BusinessException("Category already exists.");
+        }
 
         category.setName(request.name());
 

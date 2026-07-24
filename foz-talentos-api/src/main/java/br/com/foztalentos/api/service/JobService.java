@@ -11,10 +11,11 @@ import br.com.foztalentos.api.repository.CategoryRepository;
 import br.com.foztalentos.api.repository.JobRepository;
 import br.com.foztalentos.api.specification.JobSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,15 +57,14 @@ public class JobService {
 
     }
 
-    public List<JobResponseDTO> findAll() {
+    public Page<JobResponseDTO> findAll(Pageable pageable) {
 
-        return jobRepository.findAll().stream().map(this::toResponseDTO).toList();
+        return jobRepository.findAll(pageable).map(this::toResponseDTO);
     }
 
-    public List<JobResponseDTO> filter(JobFilterDTO filter) {
+    public Page<JobResponseDTO> filter(JobFilterDTO filter, Pageable pageable) {
 
-        return jobRepository.findAll(JobSpecification.filter(filter))
-                .stream().map(this::toResponseDTO).toList();
+        return jobRepository.findAll(JobSpecification.filter(filter), pageable).map(this::toResponseDTO);
     }
 
     public JobResponseDTO findById(Long id) {

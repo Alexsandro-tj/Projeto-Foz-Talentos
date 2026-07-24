@@ -2,6 +2,7 @@ package br.com.foztalentos.api.security;
 
 import br.com.foztalentos.api.entity.Admin;
 import br.com.foztalentos.api.repository.AdminRepository;
+import br.com.foztalentos.api.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

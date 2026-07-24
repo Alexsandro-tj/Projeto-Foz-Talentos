@@ -15,12 +15,12 @@ public class AuthService {
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public LoginResponseDTO login(LoginRequestDTO request){
 
-        Admin admin = adminRepository.findByEmail(request.email())
-                .orElseThrow(() ->
-                        new BusinessException("Invalid email or password."));
+        Admin admin = adminRepository.findByEmail(request.email()).orElseThrow(()
+                -> new BusinessException("Invalid email or password."));
 
         if(!passwordEncoder.matches(
                 request.password(),
@@ -29,8 +29,14 @@ public class AuthService {
             throw new BusinessException("Invalid email or password.");
         }
 
+        String token = jwtService.generateToken(admin);
+
         return new LoginResponseDTO(
-                "Login successful"
+                token,
+                "Login successful",
+                admin.getName(),
+                admin.getRole().name(),
+                admin.getEmail()
         );
 
     }

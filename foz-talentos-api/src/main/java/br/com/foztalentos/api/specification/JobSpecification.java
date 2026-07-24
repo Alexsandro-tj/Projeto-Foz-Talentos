@@ -16,7 +16,6 @@ public class JobSpecification {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(criteriaBuilder.equal(root.get("active"), true));
             predicates.add(criteriaBuilder.isTrue(root.get("active")));
 
             if (filter.states() != null && !filter.states().isEmpty()) {

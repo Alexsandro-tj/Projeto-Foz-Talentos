@@ -1,4 +1,4 @@
-package br.com.foztalentos.api.security;
+package br.com.foztalentos.api.service;
 
 import br.com.foztalentos.api.entity.Admin;
 import io.jsonwebtoken.Claims;
@@ -43,7 +43,11 @@ public class JwtService {
 
     public boolean isTokenValid(String token, Admin admin) {
 
-        return extractEmail(token).equals(admin.getEmail());
+        Claims claims = Jwts.parser().verifyWith(getKey())
+                .build().parseSignedClaims(token).getPayload();
+
+        return claims.getSubject().equals(admin.getEmail())
+                && claims.getExpiration().after(new Date());
 
     }
 

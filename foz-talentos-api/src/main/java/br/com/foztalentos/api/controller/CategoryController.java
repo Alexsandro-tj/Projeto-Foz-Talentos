@@ -6,23 +6,29 @@ import br.com.foztalentos.api.dto.category.CategoryResponseDTO;
 import br.com.foztalentos.api.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping(ApiRoutes.CATEGORIES)
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('MASTER')")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDTO>> findAll() {
-        List<CategoryResponseDTO> categories = categoryService.findAll();
+    public ResponseEntity<Page<CategoryResponseDTO>> findAll(Pageable pageable) {
+
+        Page<CategoryResponseDTO> categories = categoryService.findAll(pageable);
+
         return ResponseEntity.ok(categories);
+
     }
 
     @GetMapping("/{id}")

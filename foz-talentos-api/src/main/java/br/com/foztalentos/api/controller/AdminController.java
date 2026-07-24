@@ -6,22 +6,25 @@ import br.com.foztalentos.api.dto.admin.AdminResponseDTO;
 import br.com.foztalentos.api.service.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping(ApiRoutes.ADMINS)
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('MASTER')")
 public class AdminController {
     
         private final AdminService adminService;
 
         @GetMapping
-        public ResponseEntity<List<AdminResponseDTO>> findAll() {
-            List<AdminResponseDTO> admins = adminService.findAll();
+        public ResponseEntity<Page<AdminResponseDTO>> findAll(Pageable pageable) {
+            Page<AdminResponseDTO> admins = adminService.findAll(pageable);
             return ResponseEntity.ok(admins);
         }
 
