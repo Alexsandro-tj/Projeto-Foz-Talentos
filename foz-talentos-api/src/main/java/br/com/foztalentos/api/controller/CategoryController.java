@@ -4,6 +4,8 @@ import br.com.foztalentos.api.constant.ApiRoutes;
 import br.com.foztalentos.api.dto.category.CategoryRequestDTO;
 import br.com.foztalentos.api.dto.category.CategoryResponseDTO;
 import br.com.foztalentos.api.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,10 +20,12 @@ import org.springframework.data.domain.Pageable;
 @RequestMapping(ApiRoutes.CATEGORIES)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('MASTER')")
+@Tag(name = "Categorias")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @Operation(summary = "Listar todas as categorias")
     @GetMapping
     public ResponseEntity<Page<CategoryResponseDTO>> findAll(Pageable pageable) {
 
@@ -31,11 +35,13 @@ public class CategoryController {
 
     }
 
+    @Operation(summary = "Buscar categorias por ID")
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> findById( @PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));
     }
 
+    @Operation(summary = "Criar Categoria")
     @PostMapping
     public ResponseEntity<CategoryResponseDTO> create(@Valid @RequestBody CategoryRequestDTO request) {
 
@@ -44,6 +50,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
 
+    @Operation(summary = "Atualizar categorias")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> update(
             @PathVariable Long id,
@@ -54,6 +61,7 @@ public class CategoryController {
         return ResponseEntity.ok(updatedCategory);
     }
 
+    @Operation(summary = "Desativar categorias")
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         categoryService.deactivate(id);

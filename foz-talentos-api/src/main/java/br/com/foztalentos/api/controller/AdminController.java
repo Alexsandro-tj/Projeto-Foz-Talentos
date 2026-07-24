@@ -4,6 +4,8 @@ import br.com.foztalentos.api.constant.ApiRoutes;
 import br.com.foztalentos.api.dto.admin.AdminRequestDTO;
 import br.com.foztalentos.api.dto.admin.AdminResponseDTO;
 import br.com.foztalentos.api.service.AdminService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,21 +20,25 @@ import org.springframework.data.domain.Pageable;
 @RequestMapping(ApiRoutes.ADMINS)
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('MASTER')")
+@Tag(name = "Administradores")
 public class AdminController {
     
         private final AdminService adminService;
 
+        @Operation(summary = "Listar todos os administradores")
         @GetMapping
         public ResponseEntity<Page<AdminResponseDTO>> findAll(Pageable pageable) {
             Page<AdminResponseDTO> admins = adminService.findAll(pageable);
             return ResponseEntity.ok(admins);
         }
 
+        @Operation(summary = "Listar adminsitrador por ID")
         @GetMapping("/{id}")
         public ResponseEntity<AdminResponseDTO> findById( @PathVariable Long id) {
             return ResponseEntity.ok(adminService.findById(id));
         }
 
+        @Operation(summary = "Criar administrador")
         @PostMapping
         public ResponseEntity<AdminResponseDTO> create(@Valid @RequestBody AdminRequestDTO request) {
 
@@ -41,6 +47,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.CREATED).body(savedAdmin);
         }
 
+        @Operation(summary = "Atualizar administrador")
         @PutMapping("/{id}")
         public ResponseEntity<AdminResponseDTO> update(
                 @PathVariable Long id,
@@ -51,6 +58,7 @@ public class AdminController {
             return ResponseEntity.ok(updatedAdmin);
         }
 
+    @Operation(summary = "Desativar administrador")
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         adminService.deactivate(id);
