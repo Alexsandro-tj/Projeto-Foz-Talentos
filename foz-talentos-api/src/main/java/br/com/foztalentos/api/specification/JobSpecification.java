@@ -19,25 +19,21 @@ public class JobSpecification {
             predicates.add(criteriaBuilder.isTrue(root.get("active")));
 
             if (filter.states() != null && !filter.states().isEmpty()) {
-
                 predicates.add(root.get("state").in(filter.states()));
 
             }
 
             if (filter.categoryId() != null) {
-
                 predicates.add(criteriaBuilder.equal(root.get("category").get("id"), filter.categoryId()));
 
             }
 
             if (filter.contractType() != null) {
-
                 predicates.add(criteriaBuilder.equal(root.get("contractType"), filter.contractType()));
 
             }
 
             if (filter.workMode() != null) {
-
                 predicates.add(criteriaBuilder.equal(root.get("workMode"), filter.workMode()));
 
             }
@@ -51,6 +47,26 @@ public class JobSpecification {
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("company")),search),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),search),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("requirements")),search)));
+
+            }
+
+            if (filter.minSalary() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salary"), filter.minSalary()));
+
+            }
+
+            if (filter.maxSalary() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("salary"), filter.maxSalary()));
+
+            }
+
+            if (filter.createdAfter() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), filter.createdAfter().atStartOfDay()));
+
+            }
+
+            if (filter.createdBefore() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filter.createdBefore().atTime(23,59,59)));
 
             }
 

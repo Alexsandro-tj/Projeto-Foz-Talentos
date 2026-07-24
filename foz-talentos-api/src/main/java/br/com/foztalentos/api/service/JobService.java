@@ -58,8 +58,9 @@ public class JobService {
     }
 
     public Page<JobResponseDTO> findAll(Pageable pageable) {
+        return jobRepository.findAll(pageable)
+                .map(this::toResponseDTO);
 
-        return jobRepository.findAll(pageable).map(this::toResponseDTO);
     }
 
     public Page<JobResponseDTO> filter(JobFilterDTO filter, Pageable pageable) {
