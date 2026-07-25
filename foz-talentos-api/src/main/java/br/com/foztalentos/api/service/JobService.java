@@ -5,14 +5,19 @@ import br.com.foztalentos.api.dto.job.JobRequestDTO;
 import br.com.foztalentos.api.dto.job.JobResponseDTO;
 import br.com.foztalentos.api.entity.Category;
 import br.com.foztalentos.api.entity.Job;
+import br.com.foztalentos.api.exception.BusinessException;
+import br.com.foztalentos.api.exception.ResourceNotFoundException;
 import br.com.foztalentos.api.repository.CategoryRepository;
 import br.com.foztalentos.api.repository.JobRepository;
+import br.com.foztalentos.api.specification.JobSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.List;
 
+// Serviço para gerenciamento e busca avançada de vagas de trabalho
 @Service
 @RequiredArgsConstructor
 public class JobService {
@@ -20,10 +25,11 @@ public class JobService {
     private final JobRepository jobRepository;
     private final CategoryRepository categoryRepository;
 
+    // Cadastra uma nova vaga vinculada a uma categoria existente
     public JobResponseDTO create(JobRequestDTO request) {
 
-        Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found."));
+        Category category = categoryRepository.findById(request.categoryId()).orElseThrow(()
+                -> new ResourceNotFoundException("Category not found."));
 
         Job job = new Job();
 
@@ -38,12 +44,14 @@ public class JobService {
         job.setBenefits(request.benefits());
         job.setPhone(request.phone());
         job.setEmail(request.email());
-
         job.setCategory(category);
-
         job.setActive(true);
         job.setCreatedAt(LocalDateTime.now());
         job.setUpdatedAt(LocalDateTime.now());
+
+        if(request.salary().isBlank()){
+            throw new BusinessException("Salary is required.");
+        }
 
         Job savedJob = jobRepository.save(job);
 
@@ -51,31 +59,37 @@ public class JobService {
 
     }
 
-    public List<JobResponseDTO> findAll() {
-
-        return jobRepository.findAll()
-                .stream()
-                .map(this::toResponseDTO)
-                .toList();
+    // Retorna todas as vagas paginadas
+    public Page<JobResponseDTO> findAll(Pageable pageable) {
+        return jobRepository.findAll(pageable)
+                .map(this::toResponseDTO);
 
     }
 
+    // Executa busca paginada filtrada com Criteria API via Specification
+    public Page<JobResponseDTO> filter(JobFilterDTO filter, Pageable pageable) {
+
+        return jobRepository.findAll(JobSpecification.filter(filter), pageable).map(this::toResponseDTO);
+    }
+
+    // Busca dados de uma vaga específica por ID
     public JobResponseDTO findById(Long id) {
 
-        Job job = jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found."));
+        Job job = jobRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Job not found."));
 
         return toResponseDTO(job);
 
     }
 
+    // Atualiza as informações da vaga e revalida a categoria
     public JobResponseDTO update(Long id, JobRequestDTO request) {
 
-        Job job = jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found."));
+        Job job = jobRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Job not found."));
 
-        Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found."));
+        Category category = categoryRepository.findById(request.categoryId()).orElseThrow(()
+                -> new ResourceNotFoundException("Category not found."));
 
         job.setTitle(request.title());
         job.setCompany(request.company());
@@ -98,10 +112,11 @@ public class JobService {
 
     }
 
+    // Inativa a vaga (soft delete)
     public void deactivate(Long id) {
 
-        Job job = jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found."));
+        Job job = jobRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Job not found."));
 
         job.setActive(false);
         job.setUpdatedAt(LocalDateTime.now());
@@ -110,14 +125,7 @@ public class JobService {
 
     }
 
-    public List<JobResponseDTO> search(String search) {
-        return null;
-    }
-
-    public List<JobResponseDTO> filter(JobFilterDTO filter) {
-        return null;
-    }
-
+    // Mapeia a entidade Job para o DTO de resposta da API
     private JobResponseDTO toResponseDTO(Job job) {
 
         return new JobResponseDTO(

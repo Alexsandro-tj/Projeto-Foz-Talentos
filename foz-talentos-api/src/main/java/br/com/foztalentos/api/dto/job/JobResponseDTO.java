@@ -5,6 +5,7 @@ import br.com.foztalentos.api.enums.WorkMode;
 
 import java.time.LocalDateTime;
 
+// Dados de saída com detalhes completos de uma vaga
 public record JobResponseDTO(
 
         Long id,

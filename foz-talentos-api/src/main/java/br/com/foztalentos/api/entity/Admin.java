@@ -1,5 +1,6 @@
 package br.com.foztalentos.api.entity;
 
+import br.com.foztalentos.api.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,12 +14,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entidade que representa a tabela de administradores/usuários do sistema
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-public class Admin {
+public class Admin  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +38,8 @@ public class Admin {
     private String password;
 
     @NotNull
-    private Enum role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @NotNull
     private Boolean active = true;

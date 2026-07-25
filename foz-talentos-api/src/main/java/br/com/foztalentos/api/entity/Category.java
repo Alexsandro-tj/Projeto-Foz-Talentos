@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entidade que representa a tabela "categories" no banco de dados
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entidade que representa a tabela "jobs" (vagas de emprego)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -22,7 +23,7 @@ import java.util.List;
 @Entity
 @Table(name = "jobs")
 public class Job {
-
+    
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
