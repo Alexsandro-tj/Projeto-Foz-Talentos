@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+// Dados de entrada para criação/edição de uma vaga
 public record JobRequestDTO(
 
         @NotBlank

@@ -9,18 +9,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entidade que representa a tabela de administradores/usuários do sistema
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-public class Admin implements UserDetails {
+public class Admin  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

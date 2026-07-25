@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+// Dados de entrada para cadastro/atualização de administradores
 public record AdminRequestDTO(
 
         @NotBlank

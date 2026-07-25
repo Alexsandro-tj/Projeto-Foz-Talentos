@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+// Serviço alternativo para tratamento de login simples
 @Service
 @RequiredArgsConstructor
 public class LoginService {
@@ -16,6 +17,7 @@ public class LoginService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Autentica o usuário comparando e-mail e hash da senha
     public LoginResponseDTO login(LoginRequestDTO request) {
 
         Admin admin = adminRepository.findByEmail(request.email()).orElseThrow(()

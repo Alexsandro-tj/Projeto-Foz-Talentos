@@ -6,12 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
+// Serviço que busca o usuário no banco de dados para o processo de autenticação
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final AdminRepository adminRepository;
 
+    // Carrega os dados do administrador pelo e-mail
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {

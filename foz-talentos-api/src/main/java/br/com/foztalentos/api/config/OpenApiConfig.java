@@ -10,11 +10,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
+    // Registra as metainformações exibidas no Swagger UI
     @Bean
     public OpenAPI customOpenAPI() {
 
-        return new OpenAPI().info(new Info().title("Foz Talentos API").version("1.0")
-                        .description("""
+        return new OpenAPI().info(new Info().title("Foz Talentos API").version("1.0").description(
+                              """
                               API responsável pelo gerenciamento de:
                               - Administradores
                                 - Categorias

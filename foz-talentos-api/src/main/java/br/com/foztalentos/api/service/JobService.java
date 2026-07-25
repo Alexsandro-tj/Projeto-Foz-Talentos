@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 
+// Serviço para gerenciamento e busca avançada de vagas de trabalho
 @Service
 @RequiredArgsConstructor
 public class JobService {
@@ -24,10 +25,11 @@ public class JobService {
     private final JobRepository jobRepository;
     private final CategoryRepository categoryRepository;
 
+    // Cadastra uma nova vaga vinculada a uma categoria existente
     public JobResponseDTO create(JobRequestDTO request) {
 
-        Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found."));
+        Category category = categoryRepository.findById(request.categoryId()).orElseThrow(()
+                -> new ResourceNotFoundException("Category not found."));
 
         Job job = new Job();
 
@@ -57,17 +59,20 @@ public class JobService {
 
     }
 
+    // Retorna todas as vagas paginadas
     public Page<JobResponseDTO> findAll(Pageable pageable) {
         return jobRepository.findAll(pageable)
                 .map(this::toResponseDTO);
 
     }
 
+    // Executa busca paginada filtrada com Criteria API via Specification
     public Page<JobResponseDTO> filter(JobFilterDTO filter, Pageable pageable) {
 
         return jobRepository.findAll(JobSpecification.filter(filter), pageable).map(this::toResponseDTO);
     }
 
+    // Busca dados de uma vaga específica por ID
     public JobResponseDTO findById(Long id) {
 
         Job job = jobRepository.findById(id).orElseThrow(()
@@ -77,6 +82,7 @@ public class JobService {
 
     }
 
+    // Atualiza as informações da vaga e revalida a categoria
     public JobResponseDTO update(Long id, JobRequestDTO request) {
 
         Job job = jobRepository.findById(id).orElseThrow(()
@@ -106,6 +112,7 @@ public class JobService {
 
     }
 
+    // Inativa a vaga (soft delete)
     public void deactivate(Long id) {
 
         Job job = jobRepository.findById(id).orElseThrow(()
@@ -118,6 +125,7 @@ public class JobService {
 
     }
 
+    // Mapeia a entidade Job para o DTO de resposta da API
     private JobResponseDTO toResponseDTO(Job job) {
 
         return new JobResponseDTO(

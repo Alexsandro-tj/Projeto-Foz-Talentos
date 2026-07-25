@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 
+// Serviço de regras de negócio para gerenciamento de categorias de vagas
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-
+    // Cria uma nova categoria impedindo nomes duplicados
     public CategoryResponseDTO create(CategoryRequestDTO request) {
 
         Category category = new Category();
@@ -39,10 +40,12 @@ public class CategoryService {
 
     }
 
+    // Retorna categorias paginadas
     public Page<CategoryResponseDTO> findAll(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(this::toResponseDTO);
     }
 
+    // Busca categoria por ID ou lança exceção caso não exista
     public CategoryResponseDTO findById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found."));
@@ -50,6 +53,7 @@ public class CategoryService {
         return toResponseDTO(category);
     }
 
+    // Atualiza nome da categoria verificando duplicidade com outros registros
     public CategoryResponseDTO update(Long id, CategoryRequestDTO request) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found."));
@@ -69,6 +73,7 @@ public class CategoryService {
         return toResponseDTO(updatedCategory);
     }
 
+    // Desativa a categoria (soft delete)
     public void deactivate(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found."));
@@ -77,6 +82,8 @@ public class CategoryService {
 
         categoryRepository.save(category);
     }
+
+    // Converte a entidade Category para DTO de resposta
     private CategoryResponseDTO toResponseDTO(Category category) {
 
         return new CategoryResponseDTO(

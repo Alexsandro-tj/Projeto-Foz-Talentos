@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Entidade que representa a tabela "jobs" (vagas de emprego)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

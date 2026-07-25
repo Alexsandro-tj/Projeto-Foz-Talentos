@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+// Parâmetros opcionais para consulta filtrada de vagas
 public record JobFilterDTO(
 
         String search,
@@ -16,7 +17,7 @@ public record JobFilterDTO(
         WorkMode workMode,
         BigDecimal minSalary,
         BigDecimal maxSalary,
-        LocalDate createdAfter,
-        LocalDate createdBefore
+        LocalDate publishedAfter,
+        LocalDate publishedBefore
 
 ) {}

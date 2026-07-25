@@ -60,14 +60,12 @@ public class JobSpecification {
 
             }
 
-            if (filter.createdAfter() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), filter.createdAfter().atStartOfDay()));
-
+            if (filter.publishedAfter() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), filter.publishedAfter().atStartOfDay()));
             }
 
-            if (filter.createdBefore() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filter.createdBefore().atTime(23,59,59)));
-
+            if (filter.publishedBefore() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filter.publishedBefore().atTime(23,59,59)));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

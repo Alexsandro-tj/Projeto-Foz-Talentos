@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
 
+// Controller para gerenciamento de categorias de vagas
 @RestController
 @RequestMapping(ApiRoutes.CATEGORIES)
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    // Listagem paginada de categorias
     @Operation(summary = "Listar todas as categorias")
     @GetMapping
     public ResponseEntity<Page<CategoryResponseDTO>> findAll(Pageable pageable) {
@@ -35,13 +37,15 @@ public class CategoryController {
 
     }
 
-    @Operation(summary = "Buscar categorias por ID")
+    // Busca de categoria específica por ID
+    @Operation(summary = "Buscar categoria por ID")
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> findById( @PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));
     }
 
-    @Operation(summary = "Criar Categoria")
+    // Cadastro de nova categoria
+    @Operation(summary = "Cadastrar categoria")
     @PostMapping
     public ResponseEntity<CategoryResponseDTO> create(@Valid @RequestBody CategoryRequestDTO request) {
 
@@ -50,7 +54,8 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
 
-    @Operation(summary = "Atualizar categorias")
+    // Edição de categoria existente
+    @Operation(summary = "Atualizar categoria")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> update(
             @PathVariable Long id,
@@ -61,14 +66,12 @@ public class CategoryController {
         return ResponseEntity.ok(updatedCategory);
     }
 
+    // Inativação de categoria
     @Operation(summary = "Desativar categorias")
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         categoryService.deactivate(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
 
 }

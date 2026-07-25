@@ -11,19 +11,24 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+// Serviço responsável por criar, decodificar e validar tokens JWT
 @Service
 public class JwtService {
 
+    // Chave secreta obtida do application.properties
     @Value("${jwt.secret}")
     private String secret;
 
+    // Tempo de validade do token obtido do application.properties
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    // Converte a chave secreta textual em uma chave HMAC válida para o JJWT
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
+    // Gera um novo token JWT com subject (e-mail) e claim de papel (role)
     public String generateToken(Admin admin) {
 
         return Jwts.builder().subject(admin.getEmail()).claim("role", admin.getRole().name())
@@ -32,6 +37,7 @@ public class JwtService {
 
     }
 
+    // Extrai o e-mail do usuário contido no payload do token
     public String extractEmail(String token) {
 
         Claims claims = Jwts.parser().verifyWith(getKey())
@@ -41,6 +47,7 @@ public class JwtService {
 
     }
 
+    // Verifica se o token pertence ao admin informado e se não está expirado
     public boolean isTokenValid(String token, Admin admin) {
 
         Claims claims = Jwts.parser().verifyWith(getKey())

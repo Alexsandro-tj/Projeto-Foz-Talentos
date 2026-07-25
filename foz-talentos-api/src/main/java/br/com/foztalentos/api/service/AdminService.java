@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 
+// Serviço de regras de negócio para gerenciamento de administradores
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -21,6 +22,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Cadastra um novo administrador no sistema
     public AdminResponseDTO create(AdminRequestDTO request) {
 
         Admin admin = new Admin();
@@ -34,6 +36,7 @@ public class AdminService {
         admin.setUpdatedAt(LocalDateTime.now());
         admin.setPassword(passwordEncoder.encode(request.password()));
 
+        // Impede cadastro duplicado de e-mail
         if(adminRepository.existsByEmail(admin.getEmail())) {
             throw new BusinessException("Email Already registered");
         }
@@ -43,12 +46,14 @@ public class AdminService {
         return toResponseDTO(savedAdmin);
     }
 
+    // Retorna todos os administradores com paginação
     public Page<AdminResponseDTO> findAll(Pageable pageable) {
 
         return adminRepository.findAll(pageable).map(this::toResponseDTO);
 
     }
 
+    // Busca um administrador pelo ID ou lança 404
     public AdminResponseDTO findById(Long id) {
 
         Admin admin = adminRepository.findById(id).orElseThrow(()
@@ -58,13 +63,14 @@ public class AdminService {
 
     }
 
+    // Atualiza os dados do administrador
     public AdminResponseDTO update(Long id, AdminRequestDTO request) {
 
-        Admin admin = adminRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found."));
+        Admin admin = adminRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Admin not found."));
 
-        Admin existing = adminRepository.findByEmail(request.email())
-                .orElse(null);
+        // Valida se o novo e-mail já pertence a outro registro
+        Admin existing = adminRepository.findByEmail(request.email()).orElse(null);
 
         if(existing != null && !existing.getId().equals(id)){
             throw new BusinessException("Email already registered.");
@@ -73,6 +79,7 @@ public class AdminService {
         admin.setEmail(request.email());
         admin.setUpdatedAt(LocalDateTime.now());
 
+        // Atualiza a senha somente se um novo valor for enviado
         if (request.password() != null && !request.password().isBlank()) {
             admin.setPassword(passwordEncoder.encode(request.password()));
         }
@@ -83,6 +90,7 @@ public class AdminService {
 
     }
 
+    // Realiza a desativação lógica (soft delete) do administrador
     public void deactivate(Long id) {
 
         Admin admin = adminRepository.findById(id)
@@ -95,6 +103,7 @@ public class AdminService {
 
     }
 
+    // Converte a entidade Admin em DTO de resposta
     private AdminResponseDTO toResponseDTO(Admin admin) {
 
         return new AdminResponseDTO(

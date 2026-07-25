@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
 
+// Controller para gerenciamento de administradores
 @RestController
 @RequestMapping(ApiRoutes.ADMINS)
 @RequiredArgsConstructor
@@ -25,20 +26,23 @@ public class AdminController {
     
         private final AdminService adminService;
 
-        @Operation(summary = "Listar todos os administradores")
+        // Busca pagina com todos os administradores
+        @Operation(summary = "Listar adminsitrador por ID")
         @GetMapping
         public ResponseEntity<Page<AdminResponseDTO>> findAll(Pageable pageable) {
             Page<AdminResponseDTO> admins = adminService.findAll(pageable);
             return ResponseEntity.ok(admins);
         }
 
-        @Operation(summary = "Listar adminsitrador por ID")
+        // Busca de administrador por ID
+        @Operation(summary = "Buscar administrador por ID")
         @GetMapping("/{id}")
         public ResponseEntity<AdminResponseDTO> findById( @PathVariable Long id) {
             return ResponseEntity.ok(adminService.findById(id));
         }
 
-        @Operation(summary = "Criar administrador")
+        // Criação de novo administrador
+        @Operation(summary = "Cadastrar administrador")
         @PostMapping
         public ResponseEntity<AdminResponseDTO> create(@Valid @RequestBody AdminRequestDTO request) {
 
@@ -47,6 +51,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.CREATED).body(savedAdmin);
         }
 
+        // Atualização total de cadastro
         @Operation(summary = "Atualizar administrador")
         @PutMapping("/{id}")
         public ResponseEntity<AdminResponseDTO> update(
@@ -58,12 +63,11 @@ public class AdminController {
             return ResponseEntity.ok(updatedAdmin);
         }
 
-    @Operation(summary = "Desativar administrador")
-    @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
-        adminService.deactivate(id);
-        return ResponseEntity.noContent().build();
-    }
-
-
-    }
+        // Inativação de cadastro de administrador
+        @Operation(summary = "Desativar administrador")
+        @PatchMapping("/{id}/deactivate")
+        public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+            adminService.deactivate(id);
+            return ResponseEntity.noContent().build();
+        }
+}

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// Classe principal de regras de segurança e autorização das rotas
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity
@@ -23,11 +24,12 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    // Configura as cadeias de filtros, permissões de endpoints e política de sessão
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
 
-        http.csrf(csrf -> csrf.disable()).sessionManagement(
+        http.cors(cors -> {}).csrf(csrf -> csrf.disable()).sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
@@ -47,13 +49,7 @@ public class SecurityConfig {
 
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-
-        return new BCryptPasswordEncoder();
-
-    }
-
+    // Expõe o gerenciador de autenticação nativo do Spring
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
