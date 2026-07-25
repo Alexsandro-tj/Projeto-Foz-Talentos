@@ -350,4 +350,84 @@ document.addEventListener("DOMContentLoaded", () => {
   */
   updateSalarySlider();
 
+
+  /* =========================================================
+     MENSAGEM QUANDO NÃO HOUVER VAGAS
+  ========================================================= */
+
+  const publicJobsList =
+    document.getElementById("publicJobsList");
+
+  const publicEmptyState =
+    document.getElementById("publicEmptyState");
+
+  const jobsResultCount =
+    document.getElementById("jobsResultCount");
+
+  function updateEmptyState() {
+
+    if (!publicJobsList || !publicEmptyState) {
+      return;
+    }
+
+    const jobCards =
+      publicJobsList.querySelectorAll(
+        ".public-job-card, .job-card, article"
+      );
+
+    const hasJobs = jobCards.length > 0;
+
+    if (hasJobs) {
+      publicJobsList.hidden = false;
+      publicEmptyState.hidden = true;
+
+      if (jobsResultCount) {
+        jobsResultCount.textContent =
+          jobCards.length === 1
+            ? "1 vaga encontrada"
+            : `${jobCards.length} vagas encontradas`;
+      }
+
+      return;
+    }
+
+    publicJobsList.hidden = true;
+    publicEmptyState.hidden = false;
+
+    if (jobsResultCount) {
+      jobsResultCount.textContent =
+        "0 vagas encontradas";
+    }
+
+    const emptyTitle =
+      publicEmptyState.querySelector("h2");
+
+    const emptyText =
+      publicEmptyState.querySelector("p");
+
+    if (emptyTitle) {
+      emptyTitle.textContent =
+        "Nenhuma vaga disponível";
+    }
+
+    if (emptyText) {
+      emptyText.textContent =
+        "No momento, não há vagas publicadas.";
+    }
+  }
+
+  updateEmptyState();
+
+  if (publicJobsList) {
+    const jobsObserver =
+      new MutationObserver(() => {
+        updateEmptyState();
+      });
+
+    jobsObserver.observe(publicJobsList, {
+      childList: true,
+      subtree: true
+    });
+  }
+
 });

@@ -1319,3 +1319,31 @@ body {
 .date-filter {
   accent-color: #075ee5;
 }
+
+.empty-state {
+  width: 100%;
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.empty-state h2 {
+  margin: 0 0 10px;
+  color: #101828;
+  font-size: 24px;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #667085;
+  font-size: 15px;
+}
+
+.empty-state[hidden] {
+  display: none;
+}
+
+.jobs-result-count {
+  margin: 18px 0;
+  color: #667085;
+  font-size: 14px;
+}
