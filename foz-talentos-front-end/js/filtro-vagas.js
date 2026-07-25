@@ -1,161 +1,250 @@
+"use strict";
+
 /*
-carrega html
+  Aguarda todo o HTML da página ser carregado
+  antes de procurar os elementos.
 */
 document.addEventListener("DOMContentLoaded", () => {
 
-  /*
-    Procura o campo de pesquisa da página.
-  */
-  const searchInput = document.getElementById("publicSearch");
+  /* =========================================================
+     CAMPOS DE PESQUISA E FILTROS
+  ========================================================= */
 
   /*
-    Procura o select de estados.
+    Campo usado para pesquisar pelo nome da vaga,
+    empresa ou cidade.
   */
-  const stateFilter = document.getElementById("publicStateFilter");
+  const searchInput =
+    document.getElementById("publicSearch");
 
   /*
-    Procura o select de áreas de atuação.
+    Select responsável pelo filtro de estados.
   */
-  const areaFilter = document.getElementById("publicAreaFilter");
+  const stateFilter =
+    document.getElementById("publicStateFilter");
 
   /*
-    Procura o botão "Limpar filtros".
+    Select responsável pelo filtro de áreas.
   */
-  const clearFiltersButton = document.getElementById("clearFilters");
+  const areaFilter =
+    document.getElementById("publicAreaFilter");
 
   /*
-    Procura os checkboxes de modalidade
+    Select responsável pelo filtro de data
+    de publicação da vaga.
   */
-  const modalidadeCheckboxes = document.querySelectorAll(
-    ".modalidade-filter"
-  );
+  const dateFilter =
+    document.getElementById("publicDateFilter");
 
   /*
-    Procura os checkboxes do modelo de contrato
+    Select responsável pelo filtro
+    por faixa salarial.
   */
-  const contratoCheckboxes = document.querySelectorAll(
-    ".contrato-filter"
-  );
+  const salaryFilter =
+    document.getElementById("publicSalaryFilter");
 
   /*
-    Verifica se o botão foi encontrado.
+    Botão responsável por limpar todos os filtros.
+  */
+  const clearFiltersButton =
+    document.getElementById("clearFilters");
+
+  /*
+    Seleciona todos os checkboxes
+    usados no filtro de modalidade.
+  */
+  const modalidadeCheckboxes =
+    document.querySelectorAll(".modalidade-filter");
+
+  /*
+    Seleciona todos os checkboxes
+    usados no filtro de contrato.
+  */
+  const contratoCheckboxes =
+    document.querySelectorAll(".contrato-filter");
+
+
+  /* =========================================================
+     VERIFICAÇÃO DO BOTÃO
+  ========================================================= */
+
+  /*
+    Caso o botão de limpar filtros não exista,
+    mostramos um erro no console e encerramos
+    a execução deste arquivo.
   */
   if (!clearFiltersButton) {
-    console.error('Botão com id "clearFilters" não foi encontrado.');
+    console.error(
+      'Botão com id "clearFilters" não foi encontrado.'
+    );
+
     return;
   }
 
+
+  /* =========================================================
+     FUNÇÃO PARA DISPARAR EVENTO
+  ========================================================= */
+
   /*
-   usuário clica em "Limpar filtros", tudo que tiver dentro dessa função vai ser executado
+    Esta função dispara manualmente um evento
+    em determinado elemento.
+
+    Isso é necessário porque apenas mudar o valor
+    do select ou do input não executa automaticamente
+    a lógica de filtragem do outro arquivo JavaScript.
   */
-  clearFiltersButton.addEventListener("click", () => {
+  function dispararEvento(elemento, tipoDoEvento) {
 
     /*
-      Percorre todos os checkboxes de modalidade
+      Caso o elemento não exista,
+      a função apenas termina.
     */
+    if (!elemento) {
+      return;
+    }
+
+    elemento.dispatchEvent(
+      new Event(tipoDoEvento, {
+        bubbles: true
+      })
+    );
+  }
+
+
+  /* =========================================================
+     CLIQUE NO BOTÃO LIMPAR FILTROS
+  ========================================================= */
+
+  clearFiltersButton.addEventListener("click", () => {
+
+    /* ---------------------------------------------------------
+       LIMPAR CHECKBOXES DE MODALIDADE
+    --------------------------------------------------------- */
+
     modalidadeCheckboxes.forEach((checkbox) => {
 
       /*
-        checked = false = Desmarca
+        false significa que o checkbox
+        ficará desmarcado.
       */
       checkbox.checked = false;
     });
 
-    /*
-      Faz o mesmo para
-      os checkboxes do modelo de contrato
-    */
+
+    /* ---------------------------------------------------------
+       LIMPAR CHECKBOXES DE CONTRATO
+    --------------------------------------------------------- */
+
     contratoCheckboxes.forEach((checkbox) => {
       checkbox.checked = false;
     });
 
-    /*
-      Verifica se o select de estados existe
-    */
+
+    /* ---------------------------------------------------------
+       LIMPAR FILTRO DE ESTADO
+    --------------------------------------------------------- */
+
     if (stateFilter) {
 
       /*
-        volta pra Todos os estados
+        O valor vazio corresponde à opção:
+        "Todos os estados".
       */
       stateFilter.value = "";
     }
 
-    /*
-      Faz o mesmo pro select
-      de área de atuação.
-    */
+
+    /* ---------------------------------------------------------
+       LIMPAR FILTRO DE ÁREA
+    --------------------------------------------------------- */
+
     if (areaFilter) {
+
+      /*
+        Volta para a opção:
+        "Todas as áreas".
+      */
       areaFilter.value = "";
     }
 
-    /*
-      Verifica se o campo de pesquisa existe
-    */
+
+    /* ---------------------------------------------------------
+       LIMPAR FILTRO DE DATA
+    --------------------------------------------------------- */
+
+    if (dateFilter) {
+
+      /*
+        Volta para a opção:
+        "Todas as datas".
+      */
+      dateFilter.value = "";
+    }
+
+
+    /* ---------------------------------------------------------
+       LIMPAR FILTRO DE SALÁRIO
+    --------------------------------------------------------- */
+
+    if (salaryFilter) {
+
+      /*
+        Volta para a opção:
+        "Todos os salários".
+      */
+      salaryFilter.value = "";
+    }
+
+
+    /* ---------------------------------------------------------
+       LIMPAR CAMPO DE PESQUISA
+    --------------------------------------------------------- */
+
     if (searchInput) {
 
       /*
-        Apaga todo o texto digitado pelo usuário
+        Remove todo o texto digitado.
       */
       searchInput.value = "";
     }
 
-    /*
-      Dispara o "input".
 
+    /* =========================================================
+       DISPARAR EVENTOS DOS CAMPOS
+    ========================================================= */
+
+    /*
+      O campo de pesquisa normalmente utiliza
+      o evento "input".
     */
-    searchInput?.dispatchEvent(
-      new Event("input", {
-        bubbles: true
-      })
-    );
+    dispararEvento(searchInput, "input");
 
     /*
-      Dispara o "change"
-      para o select dos estados.
-
+      Os elementos select normalmente utilizam
+      o evento "change".
     */
-    stateFilter?.dispatchEvent(
-      new Event("change", {
-        bubbles: true
-      })
-    );
+    dispararEvento(stateFilter, "change");
+    dispararEvento(areaFilter, "change");
+    dispararEvento(dateFilter, "change");
+    dispararEvento(salaryFilter, "change");
+
 
     /*
-      o mesmo para o select
-      de Área de atuação.
-    */
-    areaFilter?.dispatchEvent(
-      new Event("change", {
-        bubbles: true
-      })
-    );
-
-    /*
-      percorretodos checkboxes .
+      Dispara o evento "change" em todos
+      os checkboxes de modalidade.
     */
     modalidadeCheckboxes.forEach((checkbox) => {
-
-      /*
-        evento "change".
-      */
-      checkbox.dispatchEvent(
-        new Event("change", {
-          bubbles: true
-        })
-      );
+      dispararEvento(checkbox, "change");
     });
 
+
     /*
-      Repete exatamente mesmo processo
-      p checkboxes d modelo de contrato.
+      Dispara o evento "change" em todos
+      os checkboxes de contrato.
     */
     contratoCheckboxes.forEach((checkbox) => {
-
-      checkbox.dispatchEvent(
-        new Event("change", {
-          bubbles: true
-        })
-      );
+      dispararEvento(checkbox, "change");
     });
 
   });
