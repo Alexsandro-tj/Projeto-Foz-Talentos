@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record ErrorResponse (
 
     LocalDateTime timestamp,
-    Integer Status,
+    Integer status,
     String message,
     String path
 

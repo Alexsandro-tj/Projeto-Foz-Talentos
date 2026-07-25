@@ -51,13 +51,11 @@ public class JobSpecification {
             }
 
             if (filter.minSalary() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salary"), filter.minSalary()));
-
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salaryValue"), filter.minSalary()));
             }
 
             if (filter.maxSalary() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("salary"), filter.maxSalary()));
-
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("salaryValue"), filter.maxSalary()));
             }
 
             if (filter.publishedAfter() != null) {

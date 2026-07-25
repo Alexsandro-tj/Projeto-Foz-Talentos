@@ -9,9 +9,12 @@ import br.com.foztalentos.api.exception.BusinessException;
 import br.com.foztalentos.api.exception.ResourceNotFoundException;
 import br.com.foztalentos.api.repository.CategoryRepository;
 import br.com.foztalentos.api.repository.JobRepository;
+import br.com.foztalentos.api.security.CustomUserDetails;
 import br.com.foztalentos.api.specification.JobSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -48,10 +51,8 @@ public class JobService {
         job.setActive(true);
         job.setCreatedAt(LocalDateTime.now());
         job.setUpdatedAt(LocalDateTime.now());
-
-        if(request.salary().isBlank()){
-            throw new BusinessException("Salary is required.");
-        }
+        job.setSalary(request.salary());
+        job.setSalaryValue(request.salaryValue());
 
         Job savedJob = jobRepository.save(job);
 
@@ -61,8 +62,8 @@ public class JobService {
 
     // Retorna todas as vagas paginadas
     public Page<JobResponseDTO> findAll(Pageable pageable) {
-        return jobRepository.findAll(pageable)
-                .map(this::toResponseDTO);
+        return jobRepository.findAll((root, query, cb)
+                -> cb.isTrue(root.get("active")), pageable).map(this::toResponseDTO);
 
     }
 
@@ -103,8 +104,8 @@ public class JobService {
         job.setPhone(request.phone());
         job.setEmail(request.email());
         job.setCategory(category);
-
-        job.setUpdatedAt(LocalDateTime.now());
+        job.setSalary(request.salary());
+        job.setSalaryValue(request.salaryValue());
 
         Job updatedJob = jobRepository.save(job);
 
@@ -136,6 +137,7 @@ public class JobService {
                 job.getContractType(),
                 job.getWorkMode(),
                 job.getSalary(),
+                job.getSalaryValue(),
                 job.getActive(),
                 job.getDescription(),
                 job.getRequirements(),

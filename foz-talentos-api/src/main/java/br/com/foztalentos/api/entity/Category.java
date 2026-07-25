@@ -33,4 +33,9 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Job> jobs = new ArrayList<>();
 
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
 }

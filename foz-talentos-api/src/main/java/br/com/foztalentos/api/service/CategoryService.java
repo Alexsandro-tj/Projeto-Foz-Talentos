@@ -26,7 +26,6 @@ public class CategoryService {
         Category category = new Category();
 
         category.setActive(true);
-        category.setCreatedAt(LocalDateTime.now());
         category.setName(request.name());
 
         if (categoryRepository.existsByNameIgnoreCase(request.name())) {

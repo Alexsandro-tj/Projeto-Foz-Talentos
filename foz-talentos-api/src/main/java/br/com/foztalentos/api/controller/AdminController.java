@@ -26,8 +26,8 @@ public class AdminController {
     
         private final AdminService adminService;
 
-        // Busca pagina com todos os administradores
-        @Operation(summary = "Listar adminsitrador por ID")
+        // Lista administradores de forma paginada
+        @Operation(summary = "Listar adminsitrador")
         @GetMapping
         public ResponseEntity<Page<AdminResponseDTO>> findAll(Pageable pageable) {
             Page<AdminResponseDTO> admins = adminService.findAll(pageable);

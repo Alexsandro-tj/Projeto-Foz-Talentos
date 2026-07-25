@@ -32,8 +32,6 @@ public class AdminService {
         admin.setEmail(request.email());
         admin.setRole(request.role());
         admin.setActive(true);
-        admin.setCreatedAt(LocalDateTime.now());
-        admin.setUpdatedAt(LocalDateTime.now());
         admin.setPassword(passwordEncoder.encode(request.password()));
 
         // Impede cadastro duplicado de e-mail
@@ -77,7 +75,6 @@ public class AdminService {
         }
         admin.setName(request.name());
         admin.setEmail(request.email());
-        admin.setUpdatedAt(LocalDateTime.now());
 
         // Atualiza a senha somente se um novo valor for enviado
         if (request.password() != null && !request.password().isBlank()) {

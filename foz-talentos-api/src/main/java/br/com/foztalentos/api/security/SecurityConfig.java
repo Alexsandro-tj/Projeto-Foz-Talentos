@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -33,16 +34,17 @@ public class SecurityConfig {
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
-                                "/auth/**",
+                                "/auth/login",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/webjars/**",
                                 "/swagger-resources/**"
-                        ).permitAll().requestMatchers("/admins/**").hasRole("MASTER")
+                        ).permitAll().requestMatchers(HttpMethod.GET, "/jobs/**").permitAll()
+                        .requestMatchers("/admins/**").hasRole("MASTER")
+                        .requestMatchers("/categories/**").hasRole("MASTER")
                         .requestMatchers("/jobs/**").hasAnyRole("MASTER", "EMPLOYEE")
                         .anyRequest().authenticated()
-
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
+
 // Dados de entrada para criação/edição de uma vaga
 public record JobRequestDTO(
 
@@ -26,6 +28,8 @@ public record JobRequestDTO(
 
         @NotBlank
         String salary,
+
+        BigDecimal salaryValue,
 
         @NotBlank
         String description,

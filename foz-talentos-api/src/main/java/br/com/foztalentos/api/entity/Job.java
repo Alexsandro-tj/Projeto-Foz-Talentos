@@ -2,6 +2,7 @@ package br.com.foztalentos.api.entity;
 
 import br.com.foztalentos.api.enums.ContractType;
 import br.com.foztalentos.api.enums.WorkMode;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +58,11 @@ public class Job {
     @NotBlank
     private String salary;
 
+    @Column(nullable = true)
+    private BigDecimal salaryValue;
+
     @NotNull
-    private Boolean active;
+    private Boolean active = true;
 
     @NotBlank
     private String description;
@@ -81,7 +86,15 @@ public class Job {
     @NotNull
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
-
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
 }

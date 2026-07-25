@@ -15,9 +15,9 @@ public record JobFilterDTO(
         Long categoryId,
         ContractType contractType,
         WorkMode workMode,
-        BigDecimal minSalary,
-        BigDecimal maxSalary,
         LocalDate publishedAfter,
-        LocalDate publishedBefore
+        LocalDate publishedBefore,
+        BigDecimal minSalary,
+        BigDecimal maxSalary
 
 ) {}

@@ -40,33 +40,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Remove o trecho "Bearer " para isolar a string do token
-        String token = authHeader.substring(7);
+        try {
+            // Remove o trecho "Bearer " para isolar a string do token
+            String token = authHeader.substring(7);
 
-        // Extrai o e-mail codificado no payload do token
-        String email = jwtService.extractEmail(token);
+            // Extrai o e-mail codificado no payload do token
+            String email = jwtService.extractEmail(token);
 
-        // Valida o token e autentica no contexto se não houver autenticação ativa
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // Valida o token e autentica no contexto se não houver autenticação ativa
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        Admin admin = adminRepository.findByEmail(email).orElse(null);
+                Admin admin = adminRepository.findByEmail(email).orElse(null);
 
-        if (admin != null && jwtService.isTokenValid(token, admin)) {
+                if (admin != null && jwtService.isTokenValid(token, admin)) {
 
-            CustomUserDetails userDetails = new CustomUserDetails(admin);
+                    CustomUserDetails userDetails = new CustomUserDetails(admin);
 
-            // Cria o objeto de autenticação do Spring Security
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    // Cria o objeto de autenticação do Spring Security
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // Registra o usuário autenticado no contexto da requisição
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                    // Registra o usuário autenticado no contexto da requisição
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
 
+                }
+
+            }
+        } catch (Exception ex) {
+            filterChain.doFilter(request, response);
+            return;
         }
-
-    }
-
         filterChain.doFilter(request, response);
 
     }

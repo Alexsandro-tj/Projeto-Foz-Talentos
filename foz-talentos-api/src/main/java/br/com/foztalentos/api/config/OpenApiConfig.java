@@ -18,9 +18,9 @@ public class OpenApiConfig {
                               """
                               API responsável pelo gerenciamento de:
                               - Administradores
-                                - Categorias
-                                - Vagas
-                                - Autenticação JWT
+                              - Categorias
+                              - Vagas
+                              - Autenticação JWT
                                 """)
                 .contact(new Contact().name("Equipe Foz Talentos").email("contato@foztalentos.com"))
                 .license(new License().name("MIT")));

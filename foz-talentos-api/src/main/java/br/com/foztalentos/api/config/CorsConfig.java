@@ -20,7 +20,7 @@ public class CorsConfig {
 
         // Origens do frontend permitidas a acessar a API
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
+                "https://foztalentos.com.br",
                 "http://localhost:3000"
         ));
 

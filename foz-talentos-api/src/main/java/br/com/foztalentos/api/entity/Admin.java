@@ -20,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "admins")
 public class Admin  {
 
     @Id
@@ -41,16 +42,30 @@ public class Admin  {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
     @NotNull
     private Boolean active = true;
 
+    @Column(nullable = false)
     @NotNull
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     @NotNull
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "createdBy")
     private List<Job> jobs = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
 }
