@@ -50,26 +50,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Valida o token e autentica no contexto se não houver autenticação ativa
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
+
                 Admin admin = adminRepository.findByEmail(email).orElse(null);
 
-                if (admin != null && jwtService.isTokenValid(token, admin)) {
+            // Se o admin não existir ou estiver desativado, interrompe a autenticação
+                if (admin == null || !admin.getActive()) {
+                    SecurityContextHolder.clearContext();
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
+                if (jwtService.isTokenValid(token, admin)) {
 
                     CustomUserDetails userDetails = new CustomUserDetails(admin);
 
-                    // Cria o objeto de autenticação do Spring Security
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
 
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    // Registra o usuário autenticado no contexto da requisição
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 }
-
             }
         } catch (Exception ex) {
-            filterChain.doFilter(request, response);
-            return;
+            SecurityContextHolder.clearContext();
         }
         filterChain.doFilter(request, response);
 

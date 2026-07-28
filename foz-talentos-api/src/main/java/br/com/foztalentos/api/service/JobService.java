@@ -5,16 +5,12 @@ import br.com.foztalentos.api.dto.job.JobRequestDTO;
 import br.com.foztalentos.api.dto.job.JobResponseDTO;
 import br.com.foztalentos.api.entity.Category;
 import br.com.foztalentos.api.entity.Job;
-import br.com.foztalentos.api.exception.BusinessException;
 import br.com.foztalentos.api.exception.ResourceNotFoundException;
 import br.com.foztalentos.api.repository.CategoryRepository;
 import br.com.foztalentos.api.repository.JobRepository;
-import br.com.foztalentos.api.security.CustomUserDetails;
 import br.com.foztalentos.api.specification.JobSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -40,6 +36,7 @@ public class JobService {
         job.setCompany(request.company());
         job.setState(request.state());
         job.setContractType(request.contractType());
+        job.setLevel(request.level());
         job.setWorkMode(request.workMode());
         job.setSalary(request.salary());
         job.setDescription(request.description());
@@ -96,6 +93,7 @@ public class JobService {
         job.setCompany(request.company());
         job.setState(request.state());
         job.setContractType(request.contractType());
+        job.setLevel(request.level());
         job.setWorkMode(request.workMode());
         job.setSalary(request.salary());
         job.setDescription(request.description());
@@ -126,6 +124,17 @@ public class JobService {
 
     }
 
+    public void activate(Long id){
+
+        Job job = jobRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Job not found."));
+
+        job.setActive(true);
+        job.setUpdatedAt(LocalDateTime.now());
+
+        jobRepository.save(job);
+    }
+
     // Mapeia a entidade Job para o DTO de resposta da API
     private JobResponseDTO toResponseDTO(Job job) {
 
@@ -135,6 +144,7 @@ public class JobService {
                 job.getCompany(),
                 job.getState(),
                 job.getContractType(),
+                job.getLevel(),
                 job.getWorkMode(),
                 job.getSalary(),
                 job.getSalaryValue(),

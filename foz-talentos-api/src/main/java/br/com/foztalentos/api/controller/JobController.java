@@ -4,6 +4,9 @@ import br.com.foztalentos.api.constant.ApiRoutes;
 import br.com.foztalentos.api.dto.job.JobFilterDTO;
 import br.com.foztalentos.api.dto.job.JobRequestDTO;
 import br.com.foztalentos.api.dto.job.JobResponseDTO;
+import br.com.foztalentos.api.enums.ContractType;
+import br.com.foztalentos.api.enums.JobLevel;
+import br.com.foztalentos.api.enums.WorkMode;
 import br.com.foztalentos.api.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -15,6 +18,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 // Controller para listagem e gestão de vagas de emprego
 @RestController
@@ -46,20 +52,43 @@ public class JobController {
             return ResponseEntity.ok(jobService.findById(id));
         }
 
-        // Busca customizada por múltiplos filtros de pesquisa (pública)
-        @Operation(summary = "Filtrar vagas", description = """
-            Filtros disponíveis:
-            • search, states, categoryId, contractType, workMode, publishedAfter, publishedBefore
-    
-            Exemplo:
-            /jobs/filter?states=RJ&categoryId=1&workMode=REMOTE&publishedAfter=2026-07-01&sort=createdAt,desc"""
-        )
-            @GetMapping("/filter")
-            public ResponseEntity<Page<JobResponseDTO>> filter(@ModelAttribute JobFilterDTO filter, Pageable pageable) {
+    // Busca customizada por múltiplos filtros de pesquisa (pública)
+    @Operation(summary = "Filtrar vagas", description = """
+        Filtros disponíveis:
+        • search, states, categoryId, contractType, level, workMode, publishedAfter, publishedBefore
 
-                return ResponseEntity.ok(jobService.filter(filter, pageable));
+        Exemplo:
+        /jobs/filter?states=RJ&categoryId=1&workMode=REMOTE&publishedAfter=2026-07-01&sort=createdAt,desc"""
+    )
+    @GetMapping("/filter")
+    public ResponseEntity<Page<JobResponseDTO>> filter(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String states,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) ContractType contractType,
+            @RequestParam(required = false) JobLevel level,
+            @RequestParam(required = false) WorkMode workMode,
+            @RequestParam(required = false) LocalDate publishedAfter,
+            @RequestParam(required = false) LocalDate publishedBefore,
+            @RequestParam(required = false) BigDecimal minSalary,
+            @RequestParam(required = false) BigDecimal maxSalary,
+            Pageable pageable
+    ) {
+        // Instancia o DTO manualmente com os parâmetros recebidos
+        JobFilterDTO filter = new JobFilterDTO();
+        filter.setSearch(search);
+        filter.setStates(states);
+        filter.setCategoryId(categoryId);
+        filter.setContractType(contractType);
+        filter.setLevel(level);
+        filter.setWorkMode(workMode);
+        filter.setPublishedAfter(publishedAfter);
+        filter.setPublishedBefore(publishedBefore);
+        filter.setMinSalary(minSalary);
+        filter.setMaxSalary(maxSalary);
 
-            }
+        return ResponseEntity.ok(jobService.filter(filter, pageable));
+    }
 
         // Cadastro de nova vaga (restrito a admins)
         @Operation(summary = "Cadastrar vaga")
@@ -89,6 +118,16 @@ public class JobController {
         @PreAuthorize("hasAnyRole('MASTER','EMPLOYEE')")
         public ResponseEntity<Void> deactivate(@PathVariable Long id) {
             jobService.deactivate(id);
+            return ResponseEntity.noContent().build();
+        }
+
+        @Operation(summary = "Reativar vaga")
+        @PatchMapping("/{id}/activate")
+        @PreAuthorize("hasAnyRole('MASTER','EMPLOYEE')")
+        public ResponseEntity<Void> activate(@PathVariable Long id){
+
+            jobService.activate(id);
+
             return ResponseEntity.noContent().build();
         }
 }

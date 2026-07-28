@@ -74,4 +74,12 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 
+    // Ativação de categoria
+    @Operation(summary = "Reativar vaga")
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<Void> activate(@PathVariable Long id){
+        categoryService.activate(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

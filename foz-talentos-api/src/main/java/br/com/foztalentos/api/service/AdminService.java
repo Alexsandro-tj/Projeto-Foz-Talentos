@@ -3,11 +3,15 @@ package br.com.foztalentos.api.service;
 import br.com.foztalentos.api.dto.admin.AdminRequestDTO;
 import br.com.foztalentos.api.dto.admin.AdminResponseDTO;
 import br.com.foztalentos.api.entity.Admin;
+import br.com.foztalentos.api.enums.Role;
 import br.com.foztalentos.api.exception.BusinessException;
 import br.com.foztalentos.api.exception.ResourceNotFoundException;
 import br.com.foztalentos.api.repository.AdminRepository;
+import br.com.foztalentos.api.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -64,15 +68,36 @@ public class AdminService {
     // Atualiza os dados do administrador
     public AdminResponseDTO update(Long id, AdminRequestDTO request) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        Admin loggedAdmin = user.getAdmin();
+
         Admin admin = adminRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("Admin not found."));
+
+        // Impede que um MASTER remova sua própria permissão de MASTER
+        if (loggedAdmin.getId().equals(admin.getId()) && request.role() != Role.MASTER) {
+            throw new BusinessException("You cannot remove your own MASTER permission.");
+        }
+
+        // Apenas MASTER pode alterar cargos
+        if (request.role() != admin.getRole()) {
+
+            if (loggedAdmin.getRole() != Role.MASTER) {
+                throw new BusinessException("Only MASTER can change administrator roles.");
+            }
+
+            admin.setRole(request.role());
+        }
 
         // Valida se o novo e-mail já pertence a outro registro
         Admin existing = adminRepository.findByEmail(request.email()).orElse(null);
 
-        if(existing != null && !existing.getId().equals(id)){
+        if (existing != null && !existing.getId().equals(id)) {
             throw new BusinessException("Email already registered.");
         }
+
         admin.setName(request.name());
         admin.setEmail(request.email());
 
@@ -81,23 +106,35 @@ public class AdminService {
             admin.setPassword(passwordEncoder.encode(request.password()));
         }
 
+        admin.setUpdatedAt(LocalDateTime.now());
+
         Admin updatedAdmin = adminRepository.save(admin);
 
         return toResponseDTO(updatedAdmin);
-
     }
 
     // Realiza a desativação lógica (soft delete) do administrador
     public void deactivate(Long id) {
 
-        Admin admin = adminRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found."));
+        Admin admin = adminRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Admin not found."));
 
         admin.setActive(false);
         admin.setUpdatedAt(LocalDateTime.now());
 
         adminRepository.save(admin);
 
+    }
+
+    public void activate(Long id){
+
+        Admin admin = adminRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Admin not found."));
+
+        admin.setActive(true);
+        admin.setUpdatedAt(LocalDateTime.now());
+
+        adminRepository.save(admin);
     }
 
     // Converte a entidade Admin em DTO de resposta

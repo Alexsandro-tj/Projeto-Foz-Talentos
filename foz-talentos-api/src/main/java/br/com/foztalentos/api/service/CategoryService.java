@@ -74,10 +74,20 @@ public class CategoryService {
 
     // Desativa a categoria (soft delete)
     public void deactivate(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found."));
+        Category category = categoryRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Category not found."));
 
         category.setActive(false);
+
+        categoryRepository.save(category);
+    }
+
+    public void activate(Long id){
+
+        Category category = categoryRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Category not found."));
+
+        category.setActive(true);
 
         categoryRepository.save(category);
     }

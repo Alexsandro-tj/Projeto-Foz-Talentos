@@ -18,52 +18,55 @@ public class JobSpecification {
 
             predicates.add(criteriaBuilder.isTrue(root.get("active")));
 
-            if (filter.states() != null && !filter.states().isEmpty()) {
-                predicates.add(root.get("state").in(filter.states()));
+            if (filter.getStates() != null && !filter.getStates().isBlank()) {
+                predicates.add(criteriaBuilder.equal(root.get("state"), filter.getStates()));
+            }
+
+            if (filter.getCategoryId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("category").get("id"), filter.getCategoryId()));
 
             }
 
-            if (filter.categoryId() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("category").get("id"), filter.categoryId()));
+            if (filter.getContractType() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("contractType"), filter.getContractType()));
 
             }
 
-            if (filter.contractType() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("contractType"), filter.contractType()));
+            if (filter.getLevel() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("level"), filter.getLevel()));
+            }
+
+            if (filter.getWorkMode() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("workMode"), filter.getWorkMode()));
 
             }
 
-            if (filter.workMode() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("workMode"), filter.workMode()));
+            if (filter.getSearch() != null && !filter.getSearch().isBlank()) {
 
-            }
-
-            if (filter.search() != null && !filter.search().isBlank()) {
-
-                String search = "%" + filter.search().toLowerCase() + "%";
+                String search = "%" + filter.getSearch().toLowerCase() + "%";
 
                 predicates.add(
                         criteriaBuilder.or(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),search),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("company")),search),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),search),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("requirements")),search)));
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("company")),search),
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),search),
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("requirements")),search)));
 
             }
 
-            if (filter.minSalary() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salaryValue"), filter.minSalary()));
+            if (filter.getMinSalary() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salaryValue"), filter.getMinSalary()));
             }
 
-            if (filter.maxSalary() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("salaryValue"), filter.maxSalary()));
+            if (filter.getMaxSalary() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("salaryValue"), filter.getMaxSalary()));
             }
 
-            if (filter.publishedAfter() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), filter.publishedAfter().atStartOfDay()));
+            if (filter.getPublishedAfter() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), filter.getPublishedAfter().atStartOfDay()));
             }
 
-            if (filter.publishedBefore() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filter.publishedBefore().atTime(23,59,59)));
+            if (filter.getPublishedBefore() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filter.getPublishedBefore().atTime(23,59,59)));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

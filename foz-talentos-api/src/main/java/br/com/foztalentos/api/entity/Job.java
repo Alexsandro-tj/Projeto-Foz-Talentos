@@ -1,6 +1,7 @@
 package br.com.foztalentos.api.entity;
 
 import br.com.foztalentos.api.enums.ContractType;
+import br.com.foztalentos.api.enums.JobLevel;
 import br.com.foztalentos.api.enums.WorkMode;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -50,6 +51,10 @@ public class Job {
     @NotNull
     @Enumerated(EnumType.STRING)
     private ContractType contractType;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private JobLevel level;
 
     @NotNull
     @Enumerated(EnumType.STRING)

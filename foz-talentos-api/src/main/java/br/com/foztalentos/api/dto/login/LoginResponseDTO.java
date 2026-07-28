@@ -6,6 +6,6 @@ public record LoginResponseDTO(
         String token,
         String message,
         String name,
-        String type,
+        String role,
         String email
 ) {}

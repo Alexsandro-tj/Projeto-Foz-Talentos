@@ -30,21 +30,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
 
-        http.cors(cors -> {}).csrf(csrf -> csrf.disable()).sessionManagement(
-                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
+        http.cors(cors -> {}).csrf(csrf -> csrf.disable()).sessionManagement(session
+                        -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
-                                "/auth/login",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**",
-                                "/webjars/**",
-                                "/swagger-resources/**"
-                        ).permitAll().requestMatchers(HttpMethod.GET, "/jobs/**").permitAll()
-                        .requestMatchers("/admins/**").hasRole("MASTER")
-                        .requestMatchers("/categories/**").hasRole("MASTER")
-                        .requestMatchers("/jobs/**").hasAnyRole("MASTER", "EMPLOYEE")
-                        .anyRequest().authenticated()
+                                        "/auth/login",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**",
+                                        "/webjars/**",
+                                        "/swagger-resources/**"
+                                ).permitAll().requestMatchers(HttpMethod.GET, "/jobs/**").permitAll()
+                                .requestMatchers("/admins/**").hasRole("MASTER")
+                                .requestMatchers("/categories/**").hasRole("MASTER")
+                                .requestMatchers("/jobs/**").hasAnyRole("MASTER", "EMPLOYEE")
+                                .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

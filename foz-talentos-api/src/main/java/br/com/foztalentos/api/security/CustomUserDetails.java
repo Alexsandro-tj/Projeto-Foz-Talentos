@@ -20,9 +20,8 @@ public class CustomUserDetails implements UserDetails {
     // Converte o Role do Admin para a autoridade do Spring Security (ex: ROLE_MASTER)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        return List.of(new SimpleGrantedAuthority("ROLE_" + admin.getRole().name()));
-
+        String roleName = "ROLE_" + admin.getRole().name();
+        return List.of(new SimpleGrantedAuthority(roleName));
     }
 
     // Retorna a senha criptografada

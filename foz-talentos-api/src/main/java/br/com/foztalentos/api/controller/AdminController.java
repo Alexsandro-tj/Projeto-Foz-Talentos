@@ -70,4 +70,11 @@ public class AdminController {
             adminService.deactivate(id);
             return ResponseEntity.noContent().build();
         }
+
+        @Operation(summary = "Reativar administrador")
+        @PatchMapping("/{id}/activate")
+        public ResponseEntity<Void> activate(@PathVariable Long id){
+            adminService.activate(id);
+            return ResponseEntity.noContent().build();
+        }
 }

@@ -1,6 +1,7 @@
 package br.com.foztalentos.api.dto.job;
 
 import br.com.foztalentos.api.enums.ContractType;
+import br.com.foztalentos.api.enums.JobLevel;
 import br.com.foztalentos.api.enums.WorkMode;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +23,9 @@ public record JobRequestDTO(
 
         @NotNull
         ContractType contractType,
+
+        @NotNull
+        JobLevel level,
 
         @NotNull
         WorkMode workMode,

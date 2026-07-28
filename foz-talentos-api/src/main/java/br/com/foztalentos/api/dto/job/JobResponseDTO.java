@@ -1,6 +1,7 @@
 package br.com.foztalentos.api.dto.job;
 
 import br.com.foztalentos.api.enums.ContractType;
+import br.com.foztalentos.api.enums.JobLevel;
 import br.com.foztalentos.api.enums.WorkMode;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ public record JobResponseDTO(
         String company,
         String state,
         ContractType contractType,
+        JobLevel level,
         WorkMode workMode,
         String salary,
         BigDecimal salaryValue,
