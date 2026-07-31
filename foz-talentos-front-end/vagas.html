@@ -126,7 +126,6 @@
                 class="modalidade-filter"
                 value="Remoto"
               >
-
               Remoto
             </label>
 
@@ -136,7 +135,6 @@
                 class="modalidade-filter"
                 value="Presencial"
               >
-
               Presencial
             </label>
 
@@ -146,7 +144,6 @@
                 class="modalidade-filter"
                 value="Híbrido"
               >
-
               Híbrido
             </label>
 
@@ -168,7 +165,6 @@
                 class="contrato-filter"
                 value="Temporário"
               >
-
               Temporário
             </label>
 
@@ -178,8 +174,64 @@
                 class="contrato-filter"
                 value="Efetivo"
               >
-
               Efetivo
+            </label>
+
+          </div>
+
+
+          <hr>
+
+
+          <!-- Nível de experiência -->
+
+          <div class="filter-group">
+
+            <h3>Nível de experiência</h3>
+
+            <label>
+              <input
+                type="checkbox"
+                class="experiencia-filter"
+                value="Estágio"
+              >
+              Estágio
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="experiencia-filter"
+                value="Júnior"
+              >
+              Júnior
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="experiencia-filter"
+                value="Pleno"
+              >
+              Pleno
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="experiencia-filter"
+                value="Sênior"
+              >
+              Sênior
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                class="experiencia-filter"
+                value="Especialista"
+              >
+              Especialista
             </label>
 
           </div>
@@ -202,7 +254,6 @@
                 value=""
                 checked
               >
-
               Todas
             </label>
 
@@ -213,7 +264,6 @@
                 class="date-filter"
                 value="today"
               >
-
               Hoje
             </label>
 
@@ -224,7 +274,6 @@
                 class="date-filter"
                 value="7"
               >
-
               Últimos 7 dias
             </label>
 
@@ -235,7 +284,6 @@
                 class="date-filter"
                 value="15"
               >
-
               Últimos 15 dias
             </label>
 
@@ -246,7 +294,6 @@
                 class="date-filter"
                 value="30"
               >
-
               Últimos 30 dias
             </label>
 
@@ -277,20 +324,12 @@
 
             <div class="double-range">
 
-              <!-- Linha cinza de fundo -->
-
               <div class="range-track"></div>
-
-
-              <!-- Parte azul da barra -->
 
               <div
                 class="range-progress"
                 id="salaryRangeProgress"
               ></div>
-
-
-              <!-- Ponto do salário mínimo -->
 
               <input
                 type="range"
@@ -302,9 +341,6 @@
                 value="0"
                 aria-label="Salário mínimo"
               >
-
-
-              <!-- Ponto do salário máximo -->
 
               <input
                 type="range"
@@ -319,15 +355,8 @@
 
             </div>
 
-
-            <p class="salary-filter-help">
-              Arraste os pontos para definir a faixa salarial.
-            </p>
-
           </div>
 
-
-          <!-- Botão para limpar todos os filtros -->
 
           <button
             id="clearFilters"
@@ -347,168 +376,112 @@
         <div class="jobs-content">
 
 
-          <!-- Filtros superiores -->
+          <!-- Localidade e área -->
 
-          <div class="public-job-filters">
+          <div class="jobs-top-filters">
 
-
-            <!-- Estado -->
             <div class="select-native-wrapper">
 
-            <select
-              id="publicStateFilter"
-              aria-label="Filtrar por estado"
-            >
+              <label
+                class="sr-only"
+                for="publicStateFilter"
+              >
+                Filtrar por estado
+              </label>
 
-              <option value="">
-                Todos os estados
-              </option>
+              <select
+                id="publicStateFilter"
+                aria-label="Filtrar por estado"
+              >
+                <option value="">Todos os estados</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+              </select>
 
-              <option value="Acre">Acre</option>
-              <option value="Alagoas">Alagoas</option>
-              <option value="Amapá">Amapá</option>
-              <option value="Amazonas">Amazonas</option>
-              <option value="Bahia">Bahia</option>
-              <option value="Ceará">Ceará</option>
-
-              <option value="Distrito Federal">
-                Distrito Federal
-              </option>
-
-              <option value="Espírito Santo">
-                Espírito Santo
-              </option>
-
-              <option value="Goiás">Goiás</option>
-              <option value="Maranhão">Maranhão</option>
-
-              <option value="Mato Grosso">
-                Mato Grosso
-              </option>
-
-              <option value="Mato Grosso do Sul">
-                Mato Grosso do Sul
-              </option>
-
-              <option value="Minas Gerais">
-                Minas Gerais
-              </option>
-
-              <option value="Pará">Pará</option>
-              <option value="Paraíba">Paraíba</option>
-              <option value="Paraná">Paraná</option>
-              <option value="Pernambuco">Pernambuco</option>
-              <option value="Piauí">Piauí</option>
-
-              <option value="Rio de Janeiro">
-                Rio de Janeiro
-              </option>
-
-              <option value="Rio Grande do Norte">
-                Rio Grande do Norte
-              </option>
-
-              <option value="Rio Grande do Sul">
-                Rio Grande do Sul
-              </option>
-
-              <option value="Rondônia">Rondônia</option>
-              <option value="Roraima">Roraima</option>
-
-              <option value="Santa Catarina">
-                Santa Catarina
-              </option>
-
-              <option value="São Paulo">
-                São Paulo
-              </option>
-
-              <option value="Sergipe">Sergipe</option>
-              <option value="Tocantins">Tocantins</option>
-
-            </select>
             </div>
 
 
-            <!-- Área de atuação -->
             <div class="select-native-wrapper">
 
-            <select
-              id="publicAreaFilter"
-              aria-label="Filtrar por área"
-            >
+              <label
+                class="sr-only"
+                for="publicAreaFilter"
+              >
+                Filtrar por área
+              </label>
 
-              <option value="">
-                Todas as áreas
-              </option>
+              <select
+                id="publicAreaFilter"
+                aria-label="Filtrar por área"
+              >
 
-              <option value="Administrativo">
-                Administrativo
-              </option>
+                <option value="">Todas as áreas</option>
+                <option value="Administrativo">Administrativo</option>
+                <option value="Atendimento">Atendimento</option>
+                <option value="Comercial">Comercial</option>
+                <option value="Contabilidade">Contabilidade</option>
+                <option value="Engenharia">Engenharia</option>
+                <option value="Financeiro">Financeiro</option>
+                <option value="Jurídico">Jurídico</option>
+                <option value="Logística">Logística</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Produção">Produção</option>
+                <option value="Recursos Humanos">Recursos Humanos</option>
+                <option value="Saúde">Saúde</option>
+                <option value="Tecnologia da Informação">
+                  Tecnologia da Informação
+                </option>
+                <option value="Vendas">Vendas</option>
 
-              <option value="Atendimento">
-                Atendimento
-              </option>
+              </select>
 
-              <option value="Comercial">
-                Comercial
-              </option>
-
-              <option value="Contabilidade">
-                Contabilidade
-              </option>
-
-              <option value="Engenharia">
-                Engenharia
-              </option>
-
-              <option value="Financeiro">
-                Financeiro
-              </option>
-
-              <option value="Jurídico">
-                Jurídico
-              </option>
-
-              <option value="Logística">
-                Logística
-              </option>
-
-              <option value="Marketing">
-                Marketing
-              </option>
-
-              <option value="Produção">
-                Produção
-              </option>
-
-              <option value="Recursos Humanos">
-                Recursos Humanos
-              </option>
-
-              <option value="Saúde">
-                Saúde
-              </option>
-
-              <option value="Tecnologia da Informação">
-                Tecnologia da Informação
-              </option>
-
-              <option value="Vendas">
-                Vendas
-              </option>
-
-            </select>
             </div>
 
+          </div>
 
-            <!-- Pesquisa -->
+
+          <!-- Pesquisa por vaga ou empresa -->
+
+          <div class="public-search-row">
+
+            <label
+              class="sr-only"
+              for="publicSearch"
+            >
+              Pesquisar vaga ou empresa
+            </label>
 
             <input
               id="publicSearch"
               type="search"
-              placeholder="Pesquisar vaga, empresa ou cidade..."
-              aria-label="Pesquisar vagas"
+              placeholder="Pesquisar vaga ou empresa..."
+              autocomplete="off"
+              aria-label="Pesquisar vaga ou empresa"
             >
 
           </div>
@@ -541,8 +514,7 @@
             <h2>Nenhuma vaga disponível</h2>
 
             <p>
-              Não encontramos oportunidades com os filtros
-              selecionados.
+              Não encontramos oportunidades com os filtros selecionados.
             </p>
 
           </div>

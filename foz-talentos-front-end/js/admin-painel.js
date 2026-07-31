@@ -11,11 +11,46 @@ const modal = document.getElementById("jobModal");
 const form = document.getElementById("jobForm");
 const toast = document.getElementById("toast");
 const campos = {
-  id: document.getElementById("jobId"), titulo: document.getElementById("jobTitle"), empresa: document.getElementById("jobCompany"),
-  localizacao: document.getElementById("jobLocation"), contrato: document.getElementById("jobContract"), modalidade: document.getElementById("jobMode"),
-  salario: document.getElementById("jobSalary"), status: document.getElementById("jobStatus"), descricao: document.getElementById("jobDescription"),
-  requisitos: document.getElementById("jobRequirements"), beneficios: document.getElementById("jobBenefits"), whatsapp: document.getElementById("jobWhatsapp"),
-  email: document.getElementById("jobEmail")
+  id: document.getElementById("jobId"),
+
+  titulo:
+    document.getElementById("jobTitle"),
+
+  empresa:
+    document.getElementById("jobCompany"),
+
+  localizacao:
+    document.getElementById("jobLocation"),
+
+  contrato:
+    document.getElementById("jobContract"),
+
+  modalidade:
+    document.getElementById("jobMode"),
+
+  experiencia:
+    document.getElementById("jobExperience"),
+
+  salario:
+    document.getElementById("jobSalary"),
+
+  status:
+    document.getElementById("jobStatus"),
+
+  descricao:
+    document.getElementById("jobDescription"),
+
+  requisitos:
+    document.getElementById("jobRequirements"),
+
+  beneficios:
+    document.getElementById("jobBenefits"),
+
+  whatsapp:
+    document.getElementById("jobWhatsapp"),
+
+  email:
+    document.getElementById("jobEmail")
 };
 
 function escapeHtml(valor = "") {
@@ -40,7 +75,20 @@ function renderizar() {
   lista.innerHTML = filtradas.map(vaga => `
     <article class="admin-job-row">
       <div class="admin-job-main"><div class="admin-job-title-line"><h3>${escapeHtml(vaga.titulo)}</h3><span class="status-badge ${vaga.status}">${vaga.status === "ativa" ? "Ativa" : "Inativa"}</span></div>
-      <p>${escapeHtml(vaga.empresa)} · ${escapeHtml(vaga.localizacao)}</p><div class="admin-job-tags"><span>${escapeHtml(vaga.contrato)}</span><span>${escapeHtml(vaga.modalidade)}</span><span>Atualizada em ${formatarData(vaga.atualizadoEm)}</span></div></div>
+      <p>${escapeHtml(vaga.empresa)} · ${escapeHtml(vaga.localizacao)}</p><div class="admin-job-tags">
+        <span>${escapeHtml(vaga.contrato)}</span>
+        <span>${escapeHtml(vaga.modalidade)}</span>
+
+        ${
+          vaga.experiencia
+            ? `<span>${escapeHtml(vaga.experiencia)}</span>`
+            : ""
+        }
+
+        <span>
+          Atualizada em ${formatarData(vaga.atualizadoEm)}
+        </span>
+      </div>
       <div class="admin-job-actions"><button class="icon-action edit" data-action="edit" data-id="${vaga.id}" type="button">Editar</button><button class="icon-action delete" data-action="delete" data-id="${vaga.id}" type="button">Excluir</button></div>
     </article>`).join("");
   vazio.hidden = filtradas.length > 0;
@@ -52,11 +100,27 @@ function abrirModal(vaga = null) {
   document.getElementById("modalTitle").textContent = vaga ? "Editar vaga" : "Nova vaga";
   campos.id.value = vaga?.id || "";
   if (vaga) {
-    campos.titulo.value = vaga.titulo; campos.empresa.value = vaga.empresa; campos.localizacao.value = vaga.localizacao;
-    campos.contrato.value = vaga.contrato; campos.modalidade.value = vaga.modalidade; campos.salario.value = vaga.salario || "";
-    campos.status.value = vaga.status; campos.descricao.value = vaga.descricao; campos.requisitos.value = (vaga.requisitos || []).join("\n");
-    campos.beneficios.value = (vaga.beneficios || []).join("\n"); campos.whatsapp.value = vaga.whatsapp || ""; campos.email.value = vaga.email || "";
-  }
+  campos.titulo.value = vaga.titulo;
+  campos.empresa.value = vaga.empresa;
+  campos.localizacao.value = vaga.localizacao;
+
+  campos.contrato.value = vaga.contrato;
+  campos.modalidade.value = vaga.modalidade;
+  campos.experiencia.value = vaga.experiencia || "";
+
+  campos.salario.value = vaga.salario || "";
+  campos.status.value = vaga.status;
+  campos.descricao.value = vaga.descricao;
+
+  campos.requisitos.value =
+    (vaga.requisitos || []).join("\n");
+
+  campos.beneficios.value =
+    (vaga.beneficios || []).join("\n");
+
+  campos.whatsapp.value = vaga.whatsapp || "";
+  campos.email.value = vaga.email || "";
+}
   modal.classList.add("open"); modal.setAttribute("aria-hidden", "false"); document.body.classList.add("modal-open");
   setTimeout(() => campos.titulo.focus(), 50);
 }
@@ -66,12 +130,46 @@ function mostrarToast(texto) { toast.textContent = texto; toast.classList.add("s
 form.addEventListener("submit", event => {
   event.preventDefault();
   if (!form.checkValidity()) { form.reportValidity(); return; }
-  const dados = {
-    titulo: campos.titulo.value.trim(), empresa: campos.empresa.value.trim(), localizacao: campos.localizacao.value.trim(),
-    contrato: campos.contrato.value, modalidade: campos.modalidade.value, salario: campos.salario.value.trim() || "A combinar",
-    status: campos.status.value, descricao: campos.descricao.value.trim(), requisitos: linhasParaArray(campos.requisitos.value),
-    beneficios: linhasParaArray(campos.beneficios.value), whatsapp: campos.whatsapp.value.replace(/\D/g, ""), email: campos.email.value.trim()
-  };
+const dados = {
+  titulo:
+    campos.titulo.value.trim(),
+
+  empresa:
+    campos.empresa.value.trim(),
+
+  localizacao:
+    campos.localizacao.value.trim(),
+
+  contrato:
+    campos.contrato.value,
+
+  modalidade:
+    campos.modalidade.value,
+
+  experiencia:
+    campos.experiencia.value,
+
+  salario:
+    campos.salario.value.trim() || "A combinar",
+
+  status:
+    campos.status.value,
+
+  descricao:
+    campos.descricao.value.trim(),
+
+  requisitos:
+    linhasParaArray(campos.requisitos.value),
+
+  beneficios:
+    linhasParaArray(campos.beneficios.value),
+
+  whatsapp:
+    campos.whatsapp.value.replace(/\D/g, ""),
+
+  email:
+    campos.email.value.trim()
+};
   if (!dados.whatsapp && !dados.email) {
     document.getElementById("formMessage").textContent = "Informe ao menos WhatsApp ou e-mail para candidatura.";
     return;

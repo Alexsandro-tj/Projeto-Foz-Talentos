@@ -62,9 +62,41 @@
           <label>Tipo de contrato<select id="jobContract" required><option value="">Selecione</option><option>CLT</option><option>PJ</option><option>Estágio</option><option>Temporário</option><option>Freelancer</option></select></label>
           <label>Modalidade<select id="jobMode" required><option value="">Selecione</option><option>Presencial</option><option>Híbrido</option><option>Remoto</option></select></label>
         </div>
-        <div class="form-grid two">
-          <label>Salário<input id="jobSalary" type="text" maxlength="60" placeholder="Ex.: R$ 2.500,00 ou A combinar"></label>
-          <label>Status<select id="jobStatus" required><option value="ativa">Ativa</option><option value="inativa">Inativa</option></select></label>
+        <div class="form-grid three">
+
+          <label>
+            Nível de experiência
+
+            <select id="jobExperience" required>
+              <option value="">Selecione</option>
+              <option value="Estágio">Estágio</option>
+              <option value="Júnior">Júnior</option>
+              <option value="Pleno">Pleno</option>
+              <option value="Sênior">Sênior</option>
+              <option value="Especialista">Especialista</option>
+            </select>
+          </label>
+
+          <label>
+            Salário
+
+            <input
+              id="jobSalary"
+              type="text"
+              maxlength="60"
+              placeholder="Ex.: R$ 2.500,00 ou A combinar"
+            >
+          </label>
+
+          <label>
+            Status
+
+            <select id="jobStatus" required>
+              <option value="ativa">Ativa</option>
+              <option value="inativa">Inativa</option>
+            </select>
+          </label>
+
         </div>
         <label>Descrição<textarea id="jobDescription" rows="4" required maxlength="1200"></textarea></label>
         <label>Requisitos <small>(um por linha)</small><textarea id="jobRequirements" rows="5" required></textarea></label>
