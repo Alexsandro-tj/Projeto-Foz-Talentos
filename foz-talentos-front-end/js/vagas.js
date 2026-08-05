@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const publicEmptyState = document.getElementById("publicEmptyState");
   const jobsResultCount = document.getElementById("jobsResultCount");
   const jobDetailsPanel = document.getElementById("jobDetailsPanel");
+  const jobDetailsBackdrop = document.getElementById("jobDetailsBackdrop");
   const jobsMainColumns = document.querySelector(".jobs-main-columns");
 
   const searchInput = document.getElementById("publicSearch");
@@ -49,6 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let vagasVisiveis = [];
   let vagaSelecionadaId = null;
+
+  function estaNoMobile() {
+    return window.matchMedia("(max-width: 900px)").matches;
+  }
 
   function escapeHtml(valor = "") {
     return String(valor).replace(/[&<>'"]/g, (caractere) => {
@@ -226,39 +231,53 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  function normalizarNumeroWhatsApp(numero) {
+    let digitos = String(numero || "").replace(/\D/g, "");
+
+    if (digitos.length === 10 || digitos.length === 11) {
+      digitos = `55${digitos}`;
+    }
+
+    if (
+      !digitos.startsWith("55") ||
+      digitos.length < 12 ||
+      digitos.length > 13
+    ) {
+      return "";
+    }
+
+    return digitos;
+  }
+
   function criarCandidatura(vaga) {
-    const titulo = vaga.titulo || "vaga";
-    const identificador = vaga.id || "";
+    const titulo =
+      String(vaga.titulo || "vaga").trim();
+
+    const empresa =
+      String(vaga.empresa || "empresa").trim();
+
+    const codigoDaVaga =
+      String(vaga.id || "sem-codigo").trim();
 
     const mensagem = encodeURIComponent(
-      `Olá! Tenho interesse na vaga ${titulo}` +
-      `${identificador ? ` (${identificador})` : ""}.`
+      `Olá! Vi a vaga de ${titulo}, da ${empresa}, ` +
+      `no site da Foz Talentos e gostaria de me candidatar. ` +
+      `Código da vaga: ${codigoDaVaga}.`
     );
 
+    const whatsappDaVaga =
+      normalizarNumeroWhatsApp(vaga.whatsapp);
+
+    const whatsappOficial =
+      "5561981357318";
+
     const whatsapp =
-      String(vaga.whatsapp || "").replace(/\D/g, "");
+      whatsappDaVaga || whatsappOficial;
 
-    if (whatsapp) {
-      return {
-        url: `https://wa.me/${whatsapp}?text=${mensagem}`,
-        texto: "Candidatar-se pelo WhatsApp"
-      };
-    }
-
-    const email = String(vaga.email || "").trim();
-
-    if (email) {
-      const assunto =
-        encodeURIComponent(`Candidatura — ${titulo}`);
-
-      return {
-        url:
-          `mailto:${email}?subject=${assunto}&body=${mensagem}`,
-        texto: "Candidatar-se por e-mail"
-      };
-    }
-
-    return null;
+    return {
+      url: `https://wa.me/${whatsapp}?text=${mensagem}`,
+      texto: "Candidatar-se pelo WhatsApp"
+    };
   }
 
   function criarLista(itens) {
@@ -344,6 +363,12 @@ document.addEventListener("DOMContentLoaded", () => {
     jobDetailsPanel.hidden = true;
     jobDetailsPanel.innerHTML = "";
     jobsMainColumns.classList.add("details-closed");
+    document.body.classList.remove("job-details-mobile-open");
+
+    if (jobDetailsBackdrop) {
+      jobDetailsBackdrop.hidden = true;
+    }
+
     renderizarCards();
   }
 
@@ -357,6 +382,14 @@ document.addEventListener("DOMContentLoaded", () => {
     jobDetailsPanel.hidden = false;
     jobsMainColumns.classList.remove("details-closed");
 
+    if (estaNoMobile()) {
+      document.body.classList.add("job-details-mobile-open");
+
+      if (jobDetailsBackdrop) {
+        jobDetailsBackdrop.hidden = false;
+      }
+    }
+
     const candidatura = criarCandidatura(vaga);
     const requisitos = criarLista(vaga.requisitos);
     const beneficios = criarLista(vaga.beneficios);
@@ -364,9 +397,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const data =
       formatarData(vaga.atualizadoEm || vaga.criadoEm);
 
-    const sobreVaga = vaga.descricao
-      ? `<p>${escapeHtml(vaga.descricao)}</p>`
-      : "";
+    const codigoDaVaga =
+      escapeHtml(vaga.id || "Sem código");
+
+    const sobreVaga = `
+      <p class="job-details-public-code">
+        <strong>Código da vaga:</strong>
+        ${codigoDaVaga}
+      </p>
+
+      ${
+        vaga.descricao
+          ? `<p>${escapeHtml(vaga.descricao)}</p>`
+          : ""
+      }
+    `;
 
     const responsabilidades = criarLista(
       vaga.responsabilidades ||
@@ -420,6 +465,15 @@ document.addEventListener("DOMContentLoaded", () => {
               : ""
           }
         </div>
+
+        <button
+          class="job-details-close"
+          type="button"
+          aria-label="Fechar detalhes da vaga"
+          data-close-job-details
+        >
+          ×
+        </button>
       </div>
 
       <div class="job-details-body">
@@ -705,7 +759,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   jobDetailsPanel.addEventListener("click", (event) => {
     event.stopPropagation();
+
+    if (event.target.closest("[data-close-job-details]")) {
+      fecharDetalhes();
+    }
   });
+
+  jobDetailsBackdrop?.addEventListener("click", fecharDetalhes);
 
   document.addEventListener("click", (event) => {
     if (!vagaSelecionadaId) return;
@@ -765,6 +825,16 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   document.addEventListener("filtersCleared", aplicarFiltros);
+
+  window.addEventListener("resize", () => {
+    if (!estaNoMobile()) {
+      document.body.classList.remove("job-details-mobile-open");
+
+      if (jobDetailsBackdrop) {
+        jobDetailsBackdrop.hidden = true;
+      }
+    }
+  });
 
   jobsMainColumns.classList.add("details-closed");
   jobDetailsPanel.hidden = true;

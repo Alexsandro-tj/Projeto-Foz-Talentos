@@ -5,7 +5,7 @@
 
   const vagasIniciais = [
     {
-      id: "vaga-1",
+      id: "FT-A1B2C3",
       titulo: "Assistente Administrativo",
       empresa: "Foz Talentos",
       cidade: "Foz do Iguaçu",
@@ -23,14 +23,14 @@
         "Boa comunicação"
       ],
       beneficios: ["Vale-transporte", "Vale-alimentação"],
-      whatsapp: "5545999999999",
+      whatsapp: "5561981357318",
       email: "vagas@foztalentos.com.br",
       status: "ativa",
       criadoEm: new Date().toISOString(),
       atualizadoEm: new Date().toISOString()
     },
     {
-      id: "vaga-2",
+      id: "FT-D4E5F6",
       titulo: "Analista de Recursos Humanos",
       empresa: "Empresa Parceira",
       cidade: "Foz do Iguaçu",
@@ -51,13 +51,71 @@
         "Vale-refeição",
         "Auxílio educação"
       ],
-      whatsapp: "5545999999999",
+      whatsapp: "5561981357318",
       email: "vagas@foztalentos.com.br",
       status: "ativa",
       criadoEm: new Date().toISOString(),
       atualizadoEm: new Date().toISOString()
     }
   ];
+
+  const WHATSAPP_OFICIAL = "5561981357318";
+
+  function corrigirWhatsAppDaVaga(vaga) {
+    const numero =
+      String(vaga?.whatsapp || "").replace(/\D/g, "");
+
+    const numeroDeTeste =
+      numero === "5545999999999";
+
+    const numeroInvalido =
+      numero.length < 12 || numero.length > 13;
+
+    if (numeroDeTeste || numeroInvalido) {
+      return {
+        ...vaga,
+        whatsapp: WHATSAPP_OFICIAL
+      };
+    }
+
+    return vaga;
+  }
+
+  function migrarCodigosAntigos(vagas) {
+    const codigosUsados = new Set();
+
+    return vagas.map((vaga) => {
+      const idAtual =
+        String(vaga.id || "").toUpperCase();
+
+      const formatoValido =
+        /^FT-[A-HJ-NP-Z2-9]{6}$/.test(idAtual);
+
+      if (
+        formatoValido &&
+        !codigosUsados.has(idAtual)
+      ) {
+        codigosUsados.add(idAtual);
+
+        return {
+          ...vaga,
+          id: idAtual
+        };
+      }
+
+      const novoCodigo =
+        gerarCodigo(
+          Array.from(codigosUsados).map((id) => ({ id }))
+        );
+
+      codigosUsados.add(novoCodigo);
+
+      return {
+        ...vaga,
+        id: novoCodigo
+      };
+    });
+  }
 
   function ler() {
     try {
@@ -72,7 +130,22 @@
       }
 
       const dados = JSON.parse(salvo);
-      return Array.isArray(dados) ? dados : [];
+
+      if (!Array.isArray(dados)) {
+        return [];
+      }
+
+      const vagasCorrigidas =
+        migrarCodigosAntigos(
+          dados.map(corrigirWhatsAppDaVaga)
+        );
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(vagasCorrigidas)
+      );
+
+      return vagasCorrigidas;
     } catch (erro) {
       console.error("Erro ao ler vagas:", erro);
       return [];
@@ -83,14 +156,29 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(vagas));
   }
 
-  function gerarId() {
-    if (window.crypto && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
+  function gerarCodigo(vagasExistentes = []) {
+    const caracteres =
+      "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-    return `vaga-${Date.now()}-${Math.random()
-      .toString(16)
-      .slice(2)}`;
+    const codigosExistentes =
+      new Set(
+        vagasExistentes
+          .map((vaga) => String(vaga.id || "").toUpperCase())
+      );
+
+    let codigo = "";
+
+    do {
+      codigo = "FT-";
+
+      for (let i = 0; i < 6; i++) {
+        codigo += caracteres.charAt(
+          Math.floor(Math.random() * caracteres.length)
+        );
+      }
+    } while (codigosExistentes.has(codigo));
+
+    return codigo;
   }
 
 
@@ -148,14 +236,15 @@
 
       const agora = new Date().toISOString();
 
+      const vagas = ler();
+
       const novaVaga = {
         ...dados,
-        id: gerarId(),
+        id: gerarCodigo(vagas),
         criadoEm: agora,
         atualizadoEm: agora
       };
 
-      const vagas = ler();
       vagas.push(novaVaga);
       salvar(vagas);
 

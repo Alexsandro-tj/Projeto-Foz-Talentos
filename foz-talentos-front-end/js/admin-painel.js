@@ -126,6 +126,7 @@ function renderizar() {
     vagas.filter((vaga) => {
       const texto =
         [
+          vaga.id,
           vaga.titulo,
           vaga.empresa,
           vaga.localizacao,
@@ -154,6 +155,11 @@ function renderizar() {
                   ${vaga.status === "ativa" ? "Ativa" : "Inativa"}
                 </span>
               </div>
+
+              <p class="admin-job-code">
+                Código da vaga:
+                <strong>${escapeHtml(vaga.id || "Sem código")}</strong>
+              </p>
 
               <p>
                 ${escapeHtml(vaga.empresa)}
