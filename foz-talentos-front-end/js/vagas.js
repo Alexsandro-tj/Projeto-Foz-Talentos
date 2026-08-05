@@ -1,31 +1,15 @@
 "use strict";
 
-/*
-  Aguarda o carregamento completo do HTML.
-*/
 document.addEventListener("DOMContentLoaded", () => {
+  const publicJobsList = document.getElementById("publicJobsList");
+  const publicEmptyState = document.getElementById("publicEmptyState");
+  const jobsResultCount = document.getElementById("jobsResultCount");
+  const jobDetailsPanel = document.getElementById("jobDetailsPanel");
+  const jobsMainColumns = document.querySelector(".jobs-main-columns");
 
-  /* =========================================================
-     ELEMENTOS DA PÁGINA
-  ========================================================= */
-
-  const publicJobsList =
-    document.getElementById("publicJobsList");
-
-  const publicEmptyState =
-    document.getElementById("publicEmptyState");
-
-  const jobsResultCount =
-    document.getElementById("jobsResultCount");
-
-  const searchInput =
-    document.getElementById("publicSearch");
-
-  const stateFilter =
-    document.getElementById("publicStateFilter");
-
-  const areaFilter =
-    document.getElementById("publicAreaFilter");
+  const searchInput = document.getElementById("publicSearch");
+  const stateFilter = document.getElementById("publicStateFilter");
+  const areaFilter = document.getElementById("publicAreaFilter");
 
   const modalidadeCheckboxes =
     document.querySelectorAll(".modalidade-filter");
@@ -45,95 +29,42 @@ document.addEventListener("DOMContentLoaded", () => {
   const salaryMaxFilter =
     document.getElementById("salaryMaxFilter");
 
-
-  /* =========================================================
-     VERIFICAÇÕES INICIAIS
-  ========================================================= */
-
-  /*
-    Caso o local onde os cards devem aparecer
-    não exista, o arquivo é encerrado.
-  */
-  if (!publicJobsList) {
-    console.error(
-      'Elemento com id "publicJobsList" não encontrado.'
-    );
-
+  if (!publicJobsList || !jobDetailsPanel || !jobsMainColumns) {
+    console.error("Estrutura da página de vagas não encontrada.");
     return;
   }
 
-  /*
-    Verifica se o serviço de vagas foi carregado.
-  */
   if (!window.VagasService) {
     console.error(
-      "VagasService não foi carregado. Verifique vagas-service.js."
+      "VagasService não foi carregado. Verifique js/vagas-service.js."
     );
-
     return;
   }
 
-
-  /* =========================================================
-     ESTADO DO FILTRO SALARIAL
-  ========================================================= */
-
-  /*
-    Guarda os valores atuais do filtro salarial.
-
-    Eles também são atualizados pelo evento personalizado
-    criado no filtros-vagas.js.
-  */
   let salarioMinimoSelecionado =
     Number(salaryMinFilter?.value ?? 0);
 
   let salarioMaximoSelecionado =
     Number(salaryMaxFilter?.value ?? 20000);
 
+  let vagasVisiveis = [];
+  let vagaSelecionadaId = null;
 
-  /* =========================================================
-     PROTEÇÃO DE CONTEÚDO HTML
-  ========================================================= */
-
-  /*
-    Impede que textos cadastrados sejam interpretados
-    como código HTML.
-  */
   function escapeHtml(valor = "") {
+    return String(valor).replace(/[&<>'"]/g, (caractere) => {
+      const entidades = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#039;",
+        '"': "&quot;"
+      };
 
-    return String(valor).replace(
-      /[&<>'"]/g,
-      (caractere) => {
-
-        const entidades = {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          "'": "&#039;",
-          '"': "&quot;"
-        };
-
-        return entidades[caractere];
-      }
-    );
+      return entidades[caractere];
+    });
   }
 
-
-  /* =========================================================
-     NORMALIZAÇÃO DE TEXTO
-  ========================================================= */
-
-  /*
-    Remove acentos, transforma o texto em minúsculas
-    e elimina espaços extras.
-
-    Isso permite comparar, por exemplo:
-
-    "Híbrido" com "hibrido"
-    "Júnior" com "junior"
-  */
   function normalizarTexto(valor = "") {
-
     return String(valor)
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -141,43 +72,19 @@ document.addEventListener("DOMContentLoaded", () => {
       .toLowerCase();
   }
 
-
-  /* =========================================================
-     FORMATAR DATA
-  ========================================================= */
-
   function formatarData(data) {
+    if (!data) return "";
 
-    if (!data) {
-      return "";
-    }
-
-    const dataConvertida =
-      new Date(data);
+    const dataConvertida = new Date(data);
 
     if (Number.isNaN(dataConvertida.getTime())) {
       return "";
     }
 
-    return new Intl.DateTimeFormat("pt-BR").format(
-      dataConvertida
-    );
+    return new Intl.DateTimeFormat("pt-BR").format(dataConvertida);
   }
 
-
-  /* =========================================================
-     CONVERTER SALÁRIO EM NÚMERO
-  ========================================================= */
-
-  /*
-    Converte textos como:
-
-    "R$ 3.500,00" para 3500
-    "2500" para 2500
-    "A combinar" para null
-  */
   function obterSalarioNumerico(salario) {
-
     if (
       salario === null ||
       salario === undefined ||
@@ -187,18 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (typeof salario === "number") {
-      return Number.isFinite(salario)
-        ? salario
-        : null;
+      return Number.isFinite(salario) ? salario : null;
     }
 
-    const texto =
-      normalizarTexto(salario);
+    const texto = normalizarTexto(salario);
 
-    /*
-      Salários não informados não serão eliminados
-      pelo filtro salarial.
-    */
     if (
       texto.includes("combinar") ||
       texto.includes("negociar") ||
@@ -207,107 +107,40 @@ document.addEventListener("DOMContentLoaded", () => {
       return null;
     }
 
-    /*
-      Remove R$, espaços e outros caracteres.
-    */
     let valorLimpo =
-      String(salario)
-        .replace(/[^\d.,-]/g, "");
+      String(salario).replace(/[^\d.,-]/g, "");
 
-    if (!valorLimpo) {
-      return null;
-    }
+    if (!valorLimpo) return null;
 
-    /*
-      Formato brasileiro:
-      3.500,00
-    */
     if (
       valorLimpo.includes(".") &&
       valorLimpo.includes(",")
     ) {
       valorLimpo =
-        valorLimpo
-          .replace(/\./g, "")
-          .replace(",", ".");
+        valorLimpo.replace(/\./g, "").replace(",", ".");
+    } else if (valorLimpo.includes(",")) {
+      valorLimpo = valorLimpo.replace(",", ".");
+    } else if (/^\d{1,3}(\.\d{3})+$/.test(valorLimpo)) {
+      valorLimpo = valorLimpo.replace(/\./g, "");
     }
 
-    /*
-      Formato:
-      3500,00
-    */
-    else if (valorLimpo.includes(",")) {
-      valorLimpo =
-        valorLimpo.replace(",", ".");
-    }
-
-    /*
-      Quando existe apenas ponto, verifica se ele
-      provavelmente representa milhar.
-
-      Exemplo:
-      3.500 vira 3500.
-    */
-    else if (
-      /^\d{1,3}(\.\d{3})+$/.test(valorLimpo)
-    ) {
-      valorLimpo =
-        valorLimpo.replace(/\./g, "");
-    }
-
-    const numero =
-      Number(valorLimpo);
-
-    return Number.isFinite(numero)
-      ? numero
-      : null;
+    const numero = Number(valorLimpo);
+    return Number.isFinite(numero) ? numero : null;
   }
 
-
-  /* =========================================================
-     OBTER ESTADO DA LOCALIZAÇÃO
-  ========================================================= */
-
-  /*
-    Procura uma sigla estadual no final da localização.
-
-    Exemplo:
-    "Foz do Iguaçu - PR" retorna "PR".
-  */
   function obterEstadoDaVaga(vaga) {
-
-    /*
-      Também aceita propriedades específicas,
-      caso sejam adicionadas futuramente.
-    */
     if (vaga.estado) {
       return String(vaga.estado).toUpperCase();
     }
 
-    const localizacao =
-      String(vaga.localizacao || "");
-
+    const localizacao = String(vaga.localizacao || "");
     const resultado =
-      localizacao.match(
-        /(?:-|\/|,)\s*([A-Za-z]{2})\s*$/
-      );
+      localizacao.match(/(?:-|\/|,)\s*([A-Za-z]{2})\s*$/);
 
-    return resultado
-      ? resultado[1].toUpperCase()
-      : "";
+    return resultado ? resultado[1].toUpperCase() : "";
   }
 
-
-  /* =========================================================
-     OBTER ÁREA DA VAGA
-  ========================================================= */
-
-  /*
-    Aceita diferentes nomes de propriedade,
-    para evitar problemas entre versões do projeto.
-  */
   function obterAreaDaVaga(vaga) {
-
     return (
       vaga.area ||
       vaga.categoria ||
@@ -317,37 +150,16 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-
-  /* =========================================================
-     VALORES SELECIONADOS NOS CHECKBOXES
-  ========================================================= */
-
   function obterValoresMarcados(checkboxes) {
-
     return Array.from(checkboxes)
       .filter((checkbox) => checkbox.checked)
-      .map((checkbox) =>
-        normalizarTexto(checkbox.value)
-      );
+      .map((checkbox) => normalizarTexto(checkbox.value));
   }
 
-
-  /* =========================================================
-     FILTRO DE CONTRATO
-  ========================================================= */
-
-  /*
-    Permite que o filtro "Efetivo" encontre
-    vagas cadastradas como "CLT".
-
-    Isso resolve a diferença entre o formulário
-    administrativo e o filtro público.
-  */
   function contratoCorresponde(
     contratoDaVaga,
     contratosSelecionados
   ) {
-
     if (contratosSelecionados.length === 0) {
       return true;
     }
@@ -357,10 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return contratosSelecionados.some(
       (contratoSelecionado) => {
-
-        /*
-          Efetivo equivale a CLT.
-        */
         if (contratoSelecionado === "efetivo") {
           return (
             contratoNormalizado === "efetivo" ||
@@ -368,55 +176,27 @@ document.addEventListener("DOMContentLoaded", () => {
           );
         }
 
-        return (
-          contratoNormalizado ===
-          contratoSelecionado
-        );
+        return contratoNormalizado === contratoSelecionado;
       }
     );
   }
 
-
-  /* =========================================================
-     FILTRO DE DATA
-  ========================================================= */
-
-  function vagaCorrespondeAData(
-    vaga,
-    valorSelecionado
-  ) {
-
-    if (!valorSelecionado) {
-      return true;
-    }
+  function vagaCorrespondeAData(vaga, valorSelecionado) {
+    if (!valorSelecionado) return true;
 
     const dataDaVaga =
-      new Date(
-        vaga.criadoEm ||
-        vaga.atualizadoEm
-      );
+      new Date(vaga.criadoEm || vaga.atualizadoEm);
 
     if (Number.isNaN(dataDaVaga.getTime())) {
       return true;
     }
 
-    const agora =
-      new Date();
-
-    const diferencaEmMilissegundos =
-      agora.getTime() - dataDaVaga.getTime();
-
     const diferencaEmDias =
-      diferencaEmMilissegundos /
+      (Date.now() - dataDaVaga.getTime()) /
       (1000 * 60 * 60 * 24);
 
-    const valor =
-      normalizarTexto(valorSelecionado);
+    const valor = normalizarTexto(valorSelecionado);
 
-    /*
-      Aceita diferentes valores possíveis
-      definidos no HTML.
-    */
     if (
       valor === "hoje" ||
       valor === "today" ||
@@ -425,68 +205,17 @@ document.addEventListener("DOMContentLoaded", () => {
       return diferencaEmDias <= 1;
     }
 
-    if (
-      valor === "3" ||
-      valor === "3dias" ||
-      valor === "ultimos-3-dias"
-    ) {
-      return diferencaEmDias <= 3;
-    }
+    const quantidadeDeDias = Number(valor);
 
-    if (
-      valor === "7" ||
-      valor === "7dias" ||
-      valor === "ultima-semana" ||
-      valor === "ultimos-7-dias"
-    ) {
-      return diferencaEmDias <= 7;
-    }
-
-    if (
-      valor === "15" ||
-      valor === "15dias" ||
-      valor === "ultimos-15-dias"
-    ) {
-      return diferencaEmDias <= 15;
-    }
-
-    if (
-      valor === "30" ||
-      valor === "30dias" ||
-      valor === "ultimo-mes" ||
-      valor === "ultimos-30-dias"
-    ) {
-      return diferencaEmDias <= 30;
-    }
-
-    /*
-      Caso o valor do HTML seja apenas um número,
-      ele será tratado como quantidade de dias.
-    */
-    const quantidadeDeDias =
-      Number(valor);
-
-    if (Number.isFinite(quantidadeDeDias)) {
-      return diferencaEmDias <= quantidadeDeDias;
-    }
-
-    return true;
+    return Number.isFinite(quantidadeDeDias)
+      ? diferencaEmDias <= quantidadeDeDias
+      : true;
   }
 
-
-  /* =========================================================
-     FILTRO SALARIAL
-  ========================================================= */
-
   function vagaCorrespondeAoSalario(vaga) {
-
     const salarioDaVaga =
       obterSalarioNumerico(vaga.salario);
 
-    /*
-      Vagas com "A combinar" permanecem visíveis,
-      pois não existe um valor conhecido para comparar.
-    */
     if (salarioDaVaga === null) {
       return true;
     }
@@ -497,273 +226,262 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-
-  /* =========================================================
-     CRIAR LINK DE CANDIDATURA
-  ========================================================= */
-
   function criarCandidatura(vaga) {
+    const titulo = vaga.titulo || "vaga";
+    const identificador = vaga.id || "";
 
-    const titulo =
-      vaga.titulo || "vaga";
-
-    const identificador =
-      vaga.id || "";
-
-    const mensagem =
-      encodeURIComponent(
-        `Olá! Tenho interesse na vaga ${titulo}` +
-        `${identificador ? ` (${identificador})` : ""}.`
-      );
+    const mensagem = encodeURIComponent(
+      `Olá! Tenho interesse na vaga ${titulo}` +
+      `${identificador ? ` (${identificador})` : ""}.`
+    );
 
     const whatsapp =
-      String(vaga.whatsapp || "")
-        .replace(/\D/g, "");
+      String(vaga.whatsapp || "").replace(/\D/g, "");
 
     if (whatsapp) {
       return {
-        url:
-          `https://wa.me/${whatsapp}?text=${mensagem}`,
-
-        texto:
-          "Candidatar-se pelo WhatsApp"
+        url: `https://wa.me/${whatsapp}?text=${mensagem}`,
+        texto: "Candidatar-se pelo WhatsApp"
       };
     }
 
-    const email =
-      String(vaga.email || "").trim();
+    const email = String(vaga.email || "").trim();
 
     if (email) {
       const assunto =
-        encodeURIComponent(
-          `Candidatura — ${titulo}`
-        );
+        encodeURIComponent(`Candidatura — ${titulo}`);
 
       return {
         url:
           `mailto:${email}?subject=${assunto}&body=${mensagem}`,
-
-        texto:
-          "Candidatar-se por e-mail"
+        texto: "Candidatar-se por e-mail"
       };
     }
 
     return null;
   }
 
-
-  /* =========================================================
-     CRIAR LISTA DE ITENS
-  ========================================================= */
-
   function criarLista(itens) {
-
-    if (
-      !Array.isArray(itens) ||
-      itens.length === 0
-    ) {
+    if (!Array.isArray(itens) || itens.length === 0) {
       return "";
     }
 
     return itens
-      .map(
-        (item) =>
-          `<li>${escapeHtml(item)}</li>`
-      )
+      .map((item) => `<li>${escapeHtml(item)}</li>`)
       .join("");
   }
 
+  function criarTag(valor, classeExtra = "") {
+    if (!valor) return "";
 
-  /* =========================================================
-     CRIAR CARD DA VAGA
-  ========================================================= */
+    return `
+      <span class="job-tag ${classeExtra}">
+        ${escapeHtml(valor)}
+      </span>
+    `;
+  }
 
   function criarCardDaVaga(vaga) {
+    const selecionado =
+      String(vaga.id || "") ===
+      String(vagaSelecionadaId || "");
 
-    const candidatura =
-      criarCandidatura(vaga);
-
-    const requisitos =
-      criarLista(vaga.requisitos);
-
-    const beneficios =
-      criarLista(vaga.beneficios);
-
-    const data =
-      formatarData(
-        vaga.atualizadoEm ||
-        vaga.criadoEm
-      );
-
-    const experiencia =
-      vaga.experiencia
-        ? `
-          <span class="job-tag">
-            ${escapeHtml(vaga.experiencia)}
-          </span>
-        `
-        : "";
-
-    const area =
-      obterAreaDaVaga(vaga);
-
-    const areaTag =
-      area
-        ? `
-          <span class="job-tag">
-            ${escapeHtml(area)}
-          </span>
-        `
-        : "";
-
-    const botaoCandidatura =
-      candidatura
-        ? `
-          <a
-            class="button button-primary public-job-apply"
-            href="${escapeHtml(candidatura.url)}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            ${escapeHtml(candidatura.texto)}
-          </a>
-        `
-        : `
-          <span class="public-job-no-contact">
-            Contato para candidatura indisponível
-          </span>
-        `;
+    const tags = [
+      criarTag(vaga.contrato),
+      criarTag(vaga.modalidade),
+      criarTag(vaga.salario, "job-salary")
+    ].join("");
 
     return `
       <article
-        class="public-job-card job-card"
+        class="public-job-card${selecionado ? " is-selected" : ""}"
         data-job-id="${escapeHtml(vaga.id || "")}"
+        tabindex="0"
+        role="button"
+        aria-pressed="${selecionado}"
+        aria-label="Ver detalhes da vaga ${escapeHtml(vaga.titulo || "")}"
       >
-        <div class="public-job-header">
+        <div class="public-job-card-content">
+          <h2>${escapeHtml(vaga.titulo || "")}</h2>
 
-          <div class="public-job-heading">
-
-            <span class="public-job-company">
-              ${escapeHtml(vaga.empresa || "")}
-            </span>
-
-            <h2>
-              ${escapeHtml(vaga.titulo || "")}
-            </h2>
-
-            <p class="public-job-location">
-              ${escapeHtml(vaga.localizacao || "")}
-            </p>
-
-          </div>
+          <p class="public-job-card-meta">
+            <span>${escapeHtml(vaga.empresa || "")}</span>
+            ${
+              vaga.localizacao
+                ? `<span aria-hidden="true">•</span>
+                   <span>${escapeHtml(vaga.localizacao)}</span>`
+                : ""
+            }
+          </p>
 
           ${
-            data
-              ? `
-                <span class="public-job-date">
-                  Atualizada em ${escapeHtml(data)}
-                </span>
-              `
+            tags
+              ? `<div class="public-job-tags">${tags}</div>`
               : ""
           }
-
         </div>
 
-        <div class="public-job-tags">
+        <span class="public-job-arrow" aria-hidden="true">›</span>
+      </article>
+    `;
+  }
 
-          ${
-            vaga.contrato
-              ? `
-                <span class="job-tag">
-                  ${escapeHtml(vaga.contrato)}
-                </span>
-              `
-              : ""
-          }
+  function criarSecaoDetalhes(titulo, conteudo, aberta = false) {
+    if (!conteudo) return "";
 
-          ${
-            vaga.modalidade
-              ? `
-                <span class="job-tag">
-                  ${escapeHtml(vaga.modalidade)}
-                </span>
-              `
-              : ""
-          }
+    return `
+      <details class="job-details-accordion" ${aberta ? "open" : ""}>
+        <summary>${escapeHtml(titulo)}</summary>
+        <div class="job-details-accordion-content">
+          ${conteudo}
+        </div>
+      </details>
+    `;
+  }
 
-          ${experiencia}
+  function fecharDetalhes() {
+    vagaSelecionadaId = null;
+    jobDetailsPanel.hidden = true;
+    jobDetailsPanel.innerHTML = "";
+    jobsMainColumns.classList.add("details-closed");
+    renderizarCards();
+  }
 
-          ${areaTag}
+  function exibirDetalhes(vaga) {
+    if (!vaga) {
+      fecharDetalhes();
+      return;
+    }
+
+    vagaSelecionadaId = vaga.id;
+    jobDetailsPanel.hidden = false;
+    jobsMainColumns.classList.remove("details-closed");
+
+    const candidatura = criarCandidatura(vaga);
+    const requisitos = criarLista(vaga.requisitos);
+    const beneficios = criarLista(vaga.beneficios);
+
+    const data =
+      formatarData(vaga.atualizadoEm || vaga.criadoEm);
+
+    const sobreVaga = vaga.descricao
+      ? `<p>${escapeHtml(vaga.descricao)}</p>`
+      : "";
+
+    const responsabilidades = criarLista(
+      vaga.responsabilidades ||
+      vaga.atribuicoes ||
+      vaga.atividades ||
+      []
+    );
+
+    jobDetailsPanel.innerHTML = `
+      <div class="job-details-header">
+        <div>
+          <h2>${escapeHtml(vaga.titulo || "")}</h2>
+
+          <p class="job-details-company">
+            ${escapeHtml(vaga.empresa || "")}
+          </p>
+
+          <p class="job-details-meta">
+            ${escapeHtml(vaga.localizacao || "")}
+
+            ${
+              vaga.modalidade
+                ? ` <span>•</span> ${escapeHtml(vaga.modalidade)}`
+                : ""
+            }
+
+            ${
+              vaga.contrato
+                ? ` <span>•</span> ${escapeHtml(vaga.contrato)}`
+                : ""
+            }
+          </p>
 
           ${
             vaga.salario
               ? `
-                <span class="job-tag job-salary">
-                  ${escapeHtml(vaga.salario)}
-                </span>
+                <p class="job-details-salary">
+                  Salário: ${escapeHtml(vaga.salario)}
+                </p>
               `
               : ""
           }
 
+          ${
+            data
+              ? `
+                <p class="job-details-date">
+                  Atualizada em ${escapeHtml(data)}
+                </p>
+              `
+              : ""
+          }
         </div>
+      </div>
+
+      <div class="job-details-body">
+        ${criarSecaoDetalhes("Sobre a vaga", sobreVaga, true)}
 
         ${
-          vaga.descricao
-            ? `
-              <p class="public-job-description">
-                ${escapeHtml(vaga.descricao)}
-              </p>
-            `
+          responsabilidades
+            ? criarSecaoDetalhes(
+                "Responsabilidades",
+                `<ul>${responsabilidades}</ul>`
+              )
             : ""
         }
 
         ${
           requisitos
-            ? `
-              <div class="public-job-section">
-                <h3>Requisitos</h3>
-
-                <ul>
-                  ${requisitos}
-                </ul>
-              </div>
-            `
+            ? criarSecaoDetalhes(
+                "Requisitos",
+                `<ul>${requisitos}</ul>`
+              )
             : ""
         }
 
         ${
           beneficios
-            ? `
-              <div class="public-job-section">
-                <h3>Benefícios</h3>
-
-                <ul>
-                  ${beneficios}
-                </ul>
-              </div>
-            `
+            ? criarSecaoDetalhes(
+                "Benefícios",
+                `<ul>${beneficios}</ul>`
+              )
             : ""
         }
+      </div>
 
-        <div class="public-job-footer">
-
-          ${botaoCandidatura}
-
-        </div>
-      </article>
+      <div class="job-details-footer">
+        ${
+          candidatura
+            ? `
+              <a
+                class="button button-primary job-details-apply"
+                href="${escapeHtml(candidatura.url)}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ${escapeHtml(candidatura.texto)}
+              </a>
+            `
+            : `
+              <span class="public-job-no-contact">
+                Contato para candidatura indisponível
+              </span>
+            `
+        }
+      </div>
     `;
+
+    renderizarCards();
   }
-
-
-  /* =========================================================
-     ATUALIZAR CONTADOR E ESTADO VAZIO
-  ========================================================= */
 
   function atualizarEstadoDaLista(
     quantidade,
     existemVagasAtivas
   ) {
-
     if (jobsResultCount) {
       jobsResultCount.textContent =
         quantidade === 1
@@ -771,9 +489,7 @@ document.addEventListener("DOMContentLoaded", () => {
           : `${quantidade} vagas encontradas`;
     }
 
-    if (!publicEmptyState) {
-      return;
-    }
+    if (!publicEmptyState) return;
 
     const tituloVazio =
       publicEmptyState.querySelector("h2");
@@ -789,9 +505,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     publicJobsList.hidden = true;
     publicEmptyState.hidden = false;
+    fecharDetalhes();
 
     if (!existemVagasAtivas) {
-
       if (tituloVazio) {
         tituloVazio.textContent =
           "Nenhuma vaga disponível";
@@ -816,17 +532,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
-  /* =========================================================
-     APLICAR FILTROS
-  ========================================================= */
+  function renderizarCards() {
+    publicJobsList.innerHTML =
+      vagasVisiveis.map(criarCardDaVaga).join("");
+  }
 
   function aplicarFiltros() {
-
-    /*
-      Apenas vagas ativas aparecem
-      na página pública.
-    */
     const vagasAtivas =
       VagasService
         .listar()
@@ -847,31 +558,21 @@ document.addEventListener("DOMContentLoaded", () => {
       normalizarTexto(areaFilter?.value);
 
     const modalidadesSelecionadas =
-      obterValoresMarcados(
-        modalidadeCheckboxes
-      );
+      obterValoresMarcados(modalidadeCheckboxes);
 
     const contratosSelecionados =
-      obterValoresMarcados(
-        contratoCheckboxes
-      );
+      obterValoresMarcados(contratoCheckboxes);
 
     const experienciasSelecionadas =
-      obterValoresMarcados(
-        experienciaCheckboxes
-      );
+      obterValoresMarcados(experienciaCheckboxes);
 
     const dataSelecionada =
       Array.from(dateRadioButtons)
-        .find(
-          (radioButton) =>
-            radioButton.checked
-        )
+        .find((radioButton) => radioButton.checked)
         ?.value || "";
 
-    const vagasFiltradas =
+    vagasVisiveis =
       vagasAtivas.filter((vaga) => {
-
         const textoDaVaga =
           normalizarTexto(
             [
@@ -890,35 +591,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const correspondeAPesquisa =
           !termoPesquisado ||
-          textoDaVaga.includes(
-            termoPesquisado
-          );
-
-        const estadoDaVaga =
-          obterEstadoDaVaga(vaga);
+          textoDaVaga.includes(termoPesquisado);
 
         const correspondeAoEstado =
           !estadoSelecionado ||
-          estadoDaVaga === estadoSelecionado;
-
-        const areaDaVaga =
-          normalizarTexto(
-            obterAreaDaVaga(vaga)
-          );
+          obterEstadoDaVaga(vaga) === estadoSelecionado;
 
         const correspondeAArea =
           !areaSelecionada ||
-          areaDaVaga === areaSelecionada;
-
-        const modalidadeDaVaga =
-          normalizarTexto(
-            vaga.modalidade
-          );
+          normalizarTexto(obterAreaDaVaga(vaga)) ===
+            areaSelecionada;
 
         const correspondeAModalidade =
           modalidadesSelecionadas.length === 0 ||
           modalidadesSelecionadas.includes(
-            modalidadeDaVaga
+            normalizarTexto(vaga.modalidade)
           );
 
         const correspondeAoContrato =
@@ -927,25 +614,11 @@ document.addEventListener("DOMContentLoaded", () => {
             contratosSelecionados
           );
 
-        const experienciaDaVaga =
-          normalizarTexto(
-            vaga.experiencia
-          );
-
         const correspondeAExperiencia =
           experienciasSelecionadas.length === 0 ||
           experienciasSelecionadas.includes(
-            experienciaDaVaga
+            normalizarTexto(vaga.experiencia)
           );
-
-        const correspondeAData =
-          vagaCorrespondeAData(
-            vaga,
-            dataSelecionada
-          );
-
-        const correspondeAoSalario =
-          vagaCorrespondeAoSalario(vaga);
 
         return (
           correspondeAPesquisa &&
@@ -954,91 +627,125 @@ document.addEventListener("DOMContentLoaded", () => {
           correspondeAModalidade &&
           correspondeAoContrato &&
           correspondeAExperiencia &&
-          correspondeAData &&
-          correspondeAoSalario
+          vagaCorrespondeAData(vaga, dataSelecionada) &&
+          vagaCorrespondeAoSalario(vaga)
         );
       });
 
-    publicJobsList.innerHTML =
-      vagasFiltradas
-        .map(criarCardDaVaga)
-        .join("");
+    if (
+      vagaSelecionadaId &&
+      !vagasVisiveis.some(
+        (vaga) =>
+          String(vaga.id) === String(vagaSelecionadaId)
+      )
+    ) {
+      fecharDetalhes();
+    }
+
+    renderizarCards();
+
+    if (vagaSelecionadaId) {
+      const vagaSelecionada =
+        vagasVisiveis.find(
+          (vaga) =>
+            String(vaga.id) ===
+            String(vagaSelecionadaId)
+        );
+
+      if (vagaSelecionada) {
+        exibirDetalhes(vagaSelecionada);
+      }
+    }
 
     atualizarEstadoDaLista(
-      vagasFiltradas.length,
+      vagasVisiveis.length,
       vagasAtivas.length > 0
     );
   }
 
+  publicJobsList.addEventListener("click", (event) => {
+    const card = event.target.closest(".public-job-card");
 
-  /* =========================================================
-     EVENTOS DOS FILTROS
-  ========================================================= */
+    if (!card) return;
 
-  searchInput?.addEventListener(
-    "input",
-    aplicarFiltros
-  );
+    event.stopPropagation();
 
-  stateFilter?.addEventListener(
-    "change",
-    aplicarFiltros
-  );
+    const idDaVaga = String(card.dataset.jobId || "");
 
-  areaFilter?.addEventListener(
-    "change",
-    aplicarFiltros
-  );
-
-  modalidadeCheckboxes.forEach(
-    (checkbox) => {
-
-      checkbox.addEventListener(
-        "change",
-        aplicarFiltros
-      );
+    if (
+      String(vagaSelecionadaId || "") === idDaVaga
+    ) {
+      fecharDetalhes();
+      return;
     }
-  );
 
-  contratoCheckboxes.forEach(
-    (checkbox) => {
-
-      checkbox.addEventListener(
-        "change",
-        aplicarFiltros
+    const vaga =
+      vagasVisiveis.find(
+        (item) =>
+          String(item.id || "") === idDaVaga
       );
+
+    if (vaga) {
+      exibirDetalhes(vaga);
     }
-  );
+  });
 
-  experienciaCheckboxes.forEach(
-    (checkbox) => {
+  publicJobsList.addEventListener("keydown", (event) => {
+    const card = event.target.closest(".public-job-card");
 
-      checkbox.addEventListener(
-        "change",
-        aplicarFiltros
-      );
+    if (!card) return;
+
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
     }
-  );
 
-  dateRadioButtons.forEach(
-    (radioButton) => {
+    event.preventDefault();
+    card.click();
+  });
 
-      radioButton.addEventListener(
-        "change",
-        aplicarFiltros
-      );
+  jobDetailsPanel.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!vagaSelecionadaId) return;
+
+    const clicouEmCard =
+      event.target.closest(".public-job-card");
+
+    const clicouNosDetalhes =
+      event.target.closest("#jobDetailsPanel");
+
+    if (clicouEmCard || clicouNosDetalhes) {
+      return;
     }
-  );
 
+    fecharDetalhes();
+  });
 
-  /* =========================================================
-     EVENTO PERSONALIZADO DO FILTRO SALARIAL
-  ========================================================= */
+  searchInput?.addEventListener("input", aplicarFiltros);
+  stateFilter?.addEventListener("change", aplicarFiltros);
+  areaFilter?.addEventListener("change", aplicarFiltros);
+
+  modalidadeCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", aplicarFiltros);
+  });
+
+  contratoCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", aplicarFiltros);
+  });
+
+  experienciaCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", aplicarFiltros);
+  });
+
+  dateRadioButtons.forEach((radioButton) => {
+    radioButton.addEventListener("change", aplicarFiltros);
+  });
 
   document.addEventListener(
     "salaryFilterChange",
     (event) => {
-
       salarioMinimoSelecionado =
         Number(
           event.detail?.minimum ??
@@ -1057,11 +764,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
+  document.addEventListener("filtersCleared", aplicarFiltros);
 
-  /* =========================================================
-     PRIMEIRA RENDERIZAÇÃO
-  ========================================================= */
-
+  jobsMainColumns.classList.add("details-closed");
+  jobDetailsPanel.hidden = true;
   aplicarFiltros();
-
 });

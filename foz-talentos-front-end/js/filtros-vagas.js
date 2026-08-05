@@ -1,18 +1,10 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  const clearFiltersButton =
-    document.getElementById("clearFilters");
-
-  const searchInput =
-    document.getElementById("publicSearch");
-
-  const stateFilter =
-    document.getElementById("publicStateFilter");
-
-  const areaFilter =
-    document.getElementById("publicAreaFilter");
+  const clearFiltersButton = document.getElementById("clearFilters");
+  const searchInput = document.getElementById("publicSearch");
+  const stateFilter = document.getElementById("publicStateFilter");
+  const areaFilter = document.getElementById("publicAreaFilter");
 
   const modalidadeCheckboxes =
     document.querySelectorAll(".modalidade-filter");
@@ -41,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const salaryRangeProgress =
     document.getElementById("salaryRangeProgress");
 
-
   function formatarMoeda(valor) {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -50,9 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }).format(valor);
   }
 
-
   function atualizarFaixaSalarial() {
-
     if (!salaryMinFilter || !salaryMaxFilter) {
       return;
     }
@@ -81,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (salaryRangeProgress) {
       const limiteMinimo = Number(salaryMinFilter.min || 0);
       const limiteMaximo = Number(salaryMaxFilter.max || 20000);
-      const intervalo = limiteMaximo - limiteMinimo;
+      const intervalo = Math.max(limiteMaximo - limiteMinimo, 1);
 
       const inicio =
         ((minimo - limiteMinimo) / intervalo) * 100;
@@ -103,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-
   salaryMinFilter?.addEventListener(
     "input",
     atualizarFaixaSalarial
@@ -114,56 +102,24 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarFaixaSalarial
   );
 
-
   clearFiltersButton?.addEventListener("click", () => {
-
-    if (searchInput) {
-      searchInput.value = "";
-      searchInput.dispatchEvent(
-        new Event("input", { bubbles: true })
-      );
-    }
-
-    if (stateFilter) {
-      stateFilter.value = "";
-      stateFilter.dispatchEvent(
-        new Event("change", { bubbles: true })
-      );
-    }
-
-    if (areaFilter) {
-      areaFilter.value = "";
-      areaFilter.dispatchEvent(
-        new Event("change", { bubbles: true })
-      );
-    }
+    if (searchInput) searchInput.value = "";
+    if (stateFilter) stateFilter.value = "";
+    if (areaFilter) areaFilter.value = "";
 
     [
       modalidadeCheckboxes,
       contratoCheckboxes,
       experienciaCheckboxes
     ].forEach((grupo) => {
-
       grupo.forEach((checkbox) => {
         checkbox.checked = false;
-        checkbox.dispatchEvent(
-          new Event("change", { bubbles: true })
-        );
       });
-
     });
 
     dateRadioButtons.forEach((radioButton) => {
       radioButton.checked = radioButton.value === "";
     });
-
-    const todasAsDatas =
-      Array.from(dateRadioButtons)
-        .find((radioButton) => radioButton.value === "");
-
-    todasAsDatas?.dispatchEvent(
-      new Event("change", { bubbles: true })
-    );
 
     if (salaryMinFilter) {
       salaryMinFilter.value =
@@ -176,9 +132,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     atualizarFaixaSalarial();
+
+    document.dispatchEvent(
+      new CustomEvent("filtersCleared")
+    );
   });
 
-
   atualizarFaixaSalarial();
-
 });

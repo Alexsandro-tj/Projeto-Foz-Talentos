@@ -8,12 +8,20 @@
       id: "vaga-1",
       titulo: "Assistente Administrativo",
       empresa: "Foz Talentos",
+      cidade: "Foz do Iguaçu",
+      estado: "PR",
       localizacao: "Foz do Iguaçu - PR",
+      area: "Administrativo",
+      experiencia: "Júnior",
       contrato: "CLT",
       modalidade: "Presencial",
       salario: "A combinar",
       descricao: "Apoio às rotinas administrativas, atendimento e organização de documentos.",
-      requisitos: ["Ensino médio completo", "Conhecimento básico em informática", "Boa comunicação"],
+      requisitos: [
+        "Ensino médio completo",
+        "Conhecimento básico em informática",
+        "Boa comunicação"
+      ],
       beneficios: ["Vale-transporte", "Vale-alimentação"],
       whatsapp: "5545999999999",
       email: "vagas@foztalentos.com.br",
@@ -25,13 +33,24 @@
       id: "vaga-2",
       titulo: "Analista de Recursos Humanos",
       empresa: "Empresa Parceira",
+      cidade: "Foz do Iguaçu",
+      estado: "PR",
       localizacao: "Foz do Iguaçu - PR",
+      area: "Recursos Humanos",
+      experiencia: "Pleno",
       contrato: "CLT",
       modalidade: "Híbrido",
       salario: "R$ 3.500,00",
       descricao: "Atuação em recrutamento e seleção, integração e apoio aos processos de desenvolvimento humano.",
-      requisitos: ["Graduação em RH, Psicologia ou áreas afins", "Experiência com recrutamento e seleção"],
-      beneficios: ["Plano de saúde", "Vale-refeição", "Auxílio educação"],
+      requisitos: [
+        "Graduação em RH, Psicologia ou áreas afins",
+        "Experiência com recrutamento e seleção"
+      ],
+      beneficios: [
+        "Plano de saúde",
+        "Vale-refeição",
+        "Auxílio educação"
+      ],
       whatsapp: "5545999999999",
       email: "vagas@foztalentos.com.br",
       status: "ativa",
@@ -43,10 +62,15 @@
   function ler() {
     try {
       const salvo = localStorage.getItem(STORAGE_KEY);
+
       if (!salvo) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(vagasIniciais));
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(vagasIniciais)
+        );
         return [...vagasIniciais];
       }
+
       const dados = JSON.parse(salvo);
       return Array.isArray(dados) ? dados : [];
     } catch (erro) {
@@ -60,37 +84,113 @@
   }
 
   function gerarId() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    return `vaga-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    if (window.crypto && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+
+    return `vaga-${Date.now()}-${Math.random()
+      .toString(16)
+      .slice(2)}`;
+  }
+
+
+  const CAMPOS_OBRIGATORIOS = [
+    "titulo",
+    "empresa",
+    "cidade",
+    "estado",
+    "localizacao",
+    "area",
+    "contrato",
+    "modalidade",
+    "experiencia",
+    "salario",
+    "status",
+    "descricao"
+  ];
+
+  function validarDadosDaVaga(dados) {
+    const camposAusentes =
+      CAMPOS_OBRIGATORIOS.filter(
+        (campo) =>
+          !String(dados?.[campo] ?? "").trim()
+      );
+
+    if (
+      !Array.isArray(dados?.requisitos) ||
+      dados.requisitos.length === 0
+    ) {
+      camposAusentes.push("requisitos");
+    }
+
+    if (camposAusentes.length > 0) {
+      throw new Error(
+        `Campos obrigatórios ausentes: ${camposAusentes.join(", ")}.`
+      );
+    }
   }
 
   window.VagasService = {
     listar() {
-      return ler().sort((a, b) => new Date(b.atualizadoEm) - new Date(a.atualizadoEm));
+      return ler().sort(
+        (a, b) =>
+          new Date(b.atualizadoEm) -
+          new Date(a.atualizadoEm)
+      );
     },
+
     buscarPorId(id) {
-      return ler().find(vaga => vaga.id === id) || null;
+      return ler().find((vaga) => vaga.id === id) || null;
     },
+
     criar(dados) {
+      validarDadosDaVaga(dados);
+
       const agora = new Date().toISOString();
-      const novaVaga = { ...dados, id: gerarId(), criadoEm: agora, atualizadoEm: agora };
+
+      const novaVaga = {
+        ...dados,
+        id: gerarId(),
+        criadoEm: agora,
+        atualizadoEm: agora
+      };
+
       const vagas = ler();
       vagas.push(novaVaga);
       salvar(vagas);
+
       return novaVaga;
     },
+
     atualizar(id, dados) {
+      validarDadosDaVaga(dados);
+
       const vagas = ler();
-      const indice = vagas.findIndex(vaga => vaga.id === id);
-      if (indice < 0) throw new Error("Vaga não encontrada.");
-      vagas[indice] = { ...vagas[indice], ...dados, id, atualizadoEm: new Date().toISOString() };
+      const indice = vagas.findIndex((vaga) => vaga.id === id);
+
+      if (indice < 0) {
+        throw new Error("Vaga não encontrada.");
+      }
+
+      vagas[indice] = {
+        ...vagas[indice],
+        ...dados,
+        id,
+        atualizadoEm: new Date().toISOString()
+      };
+
       salvar(vagas);
       return vagas[indice];
     },
+
     excluir(id) {
       const vagas = ler();
-      const novasVagas = vagas.filter(vaga => vaga.id !== id);
-      if (novasVagas.length === vagas.length) return false;
+      const novasVagas = vagas.filter((vaga) => vaga.id !== id);
+
+      if (novasVagas.length === vagas.length) {
+        return false;
+      }
+
       salvar(novasVagas);
       return true;
     }

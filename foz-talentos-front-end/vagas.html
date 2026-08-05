@@ -1,61 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="Vagas disponíveis na Foz Talentos."
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vagas disponíveis na Foz Talentos.">
   <title>Vagas | Foz Talentos</title>
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
-
-  <link
-    rel="stylesheet"
-    href="styles.css"
-  >
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/vagas-interativas.css">
 </head>
 
 <body>
-
-  <!-- ======================================================
-       MENU DE NAVEGAÇÃO
-  ======================================================= -->
-
   <header class="header">
-
     <div class="container nav">
-
-      <a
-        class="logo"
-        href="index.html"
-      >
-        <img
-          src="img/logo-foz-talentos.png"
-          alt="Foz Talentos"
-        >
+      <a class="logo" href="index.html">
+        <img src="img/logo-foz-talentos.png" alt="Foz Talentos">
       </a>
 
       <button
@@ -75,261 +38,130 @@
         <a href="sobre.html">Sobre</a>
         <a href="servicos.html">Serviços</a>
         <a href="contato.html">Contato</a>
-
-        <a
-          class="admin-link"
-          href="admin-login.html"
-        >
-          Login ADM
-        </a>
+        <a class="admin-link" href="admin-login.html">Login ADM</a>
       </nav>
 
-      <a
-        class="button button-primary nav-cta"
-        href="vagas.html"
-      >
+      <a class="button button-primary nav-cta" href="vagas.html">
         Ver vagas
       </a>
-
     </div>
-
   </header>
 
-
-  <!-- ======================================================
-       CONTEÚDO PRINCIPAL
-  ======================================================= -->
-
   <main>
-
     <section class="section jobs">
-
       <div class="container jobs-layout">
 
-
-        <!-- ==================================================
-             BARRA LATERAL DE FILTROS
-        =================================================== -->
-
         <aside class="jobs-sidebar">
-
-
-          <!-- Modalidade -->
-
           <div class="filter-group">
-
             <h3>Modalidade</h3>
 
             <label>
-              <input
-                type="checkbox"
-                class="modalidade-filter"
-                value="Remoto"
-              >
+              <input type="checkbox" class="modalidade-filter" value="Remoto">
               Remoto
             </label>
 
             <label>
-              <input
-                type="checkbox"
-                class="modalidade-filter"
-                value="Presencial"
-              >
+              <input type="checkbox" class="modalidade-filter" value="Presencial">
               Presencial
             </label>
 
             <label>
-              <input
-                type="checkbox"
-                class="modalidade-filter"
-                value="Híbrido"
-              >
+              <input type="checkbox" class="modalidade-filter" value="Híbrido">
               Híbrido
             </label>
-
           </div>
-
 
           <hr>
 
-
-          <!-- Modelo de contrato -->
-
           <div class="filter-group">
-
             <h3>Modelo de contrato</h3>
 
             <label>
-              <input
-                type="checkbox"
-                class="contrato-filter"
-                value="Temporário"
-              >
+              <input type="checkbox" class="contrato-filter" value="Temporário">
               Temporário
             </label>
 
             <label>
-              <input
-                type="checkbox"
-                class="contrato-filter"
-                value="Efetivo"
-              >
+              <input type="checkbox" class="contrato-filter" value="Efetivo">
               Efetivo
             </label>
-
           </div>
-
 
           <hr>
 
-
-          <!-- Nível de experiência -->
-
           <div class="filter-group">
-
             <h3>Nível de experiência</h3>
 
             <label>
-              <input
-                type="checkbox"
-                class="experiencia-filter"
-                value="Estágio"
-              >
+              <input type="checkbox" class="experiencia-filter" value="Estágio">
               Estágio
             </label>
 
             <label>
-              <input
-                type="checkbox"
-                class="experiencia-filter"
-                value="Júnior"
-              >
+              <input type="checkbox" class="experiencia-filter" value="Júnior">
               Júnior
             </label>
 
             <label>
-              <input
-                type="checkbox"
-                class="experiencia-filter"
-                value="Pleno"
-              >
+              <input type="checkbox" class="experiencia-filter" value="Pleno">
               Pleno
             </label>
 
             <label>
-              <input
-                type="checkbox"
-                class="experiencia-filter"
-                value="Sênior"
-              >
+              <input type="checkbox" class="experiencia-filter" value="Sênior">
               Sênior
             </label>
 
             <label>
-              <input
-                type="checkbox"
-                class="experiencia-filter"
-                value="Especialista"
-              >
+              <input type="checkbox" class="experiencia-filter" value="Especialista">
               Especialista
             </label>
-
           </div>
-
 
           <hr>
 
-
-          <!-- Data de publicação -->
-
           <div class="filter-group">
-
             <h3>Publicação</h3>
 
             <label>
-              <input
-                type="radio"
-                name="publicacao"
-                class="date-filter"
-                value=""
-                checked
-              >
+              <input type="radio" name="publicacao" class="date-filter" value="" checked>
               Todas
             </label>
 
             <label>
-              <input
-                type="radio"
-                name="publicacao"
-                class="date-filter"
-                value="today"
-              >
+              <input type="radio" name="publicacao" class="date-filter" value="today">
               Hoje
             </label>
 
             <label>
-              <input
-                type="radio"
-                name="publicacao"
-                class="date-filter"
-                value="7"
-              >
+              <input type="radio" name="publicacao" class="date-filter" value="7">
               Últimos 7 dias
             </label>
 
             <label>
-              <input
-                type="radio"
-                name="publicacao"
-                class="date-filter"
-                value="15"
-              >
+              <input type="radio" name="publicacao" class="date-filter" value="15">
               Últimos 15 dias
             </label>
 
             <label>
-              <input
-                type="radio"
-                name="publicacao"
-                class="date-filter"
-                value="30"
-              >
+              <input type="radio" name="publicacao" class="date-filter" value="30">
               Últimos 30 dias
             </label>
-
           </div>
-
 
           <hr>
 
-
-          <!-- Faixa salarial -->
-
           <div class="filter-group salary-filter-group">
-
             <h3>Faixa salarial</h3>
 
             <div class="salary-values">
-
-              <span id="salaryMinText">
-                R$ 0
-              </span>
-
-              <span id="salaryMaxText">
-                R$ 20.000
-              </span>
-
+              <span id="salaryMinText">R$ 0</span>
+              <span id="salaryMaxText">R$ 20.000</span>
             </div>
 
-
             <div class="double-range">
-
               <div class="range-track"></div>
-
-              <div
-                class="range-progress"
-                id="salaryRangeProgress"
-              ></div>
+              <div class="range-progress" id="salaryRangeProgress"></div>
 
               <input
                 type="range"
@@ -352,47 +184,22 @@
                 value="20000"
                 aria-label="Salário máximo"
               >
-
             </div>
-
           </div>
 
-
-          <button
-            id="clearFilters"
-            class="btn-outline"
-            type="button"
-          >
+          <button id="clearFilters" class="btn-outline" type="button">
             Limpar filtros
           </button>
-
         </aside>
 
-
-        <!-- ==================================================
-             LISTA DE VAGAS
-        =================================================== -->
-
-        <div class="jobs-content">
-
-
-          <!-- Localidade e área -->
-
-          <div class="jobs-top-filters">
-
+        <section class="jobs-browser" aria-label="Navegador de vagas">
+          <div class="jobs-toolbar">
             <div class="select-native-wrapper">
-
-              <label
-                class="sr-only"
-                for="publicStateFilter"
-              >
+              <label class="sr-only" for="publicStateFilter">
                 Filtrar por estado
               </label>
 
-              <select
-                id="publicStateFilter"
-                aria-label="Filtrar por estado"
-              >
+              <select id="publicStateFilter" aria-label="Filtrar por estado">
                 <option value="">Todos os estados</option>
                 <option value="AC">Acre</option>
                 <option value="AL">Alagoas</option>
@@ -422,24 +229,14 @@
                 <option value="SE">Sergipe</option>
                 <option value="TO">Tocantins</option>
               </select>
-
             </div>
 
-
             <div class="select-native-wrapper">
-
-              <label
-                class="sr-only"
-                for="publicAreaFilter"
-              >
+              <label class="sr-only" for="publicAreaFilter">
                 Filtrar por área
               </label>
 
-              <select
-                id="publicAreaFilter"
-                aria-label="Filtrar por área"
-              >
-
+              <select id="publicAreaFilter" aria-label="Filtrar por área">
                 <option value="">Todas as áreas</option>
                 <option value="Administrativo">Administrativo</option>
                 <option value="Atendimento">Atendimento</option>
@@ -453,201 +250,87 @@
                 <option value="Produção">Produção</option>
                 <option value="Recursos Humanos">Recursos Humanos</option>
                 <option value="Saúde">Saúde</option>
-                <option value="Tecnologia da Informação">
-                  Tecnologia da Informação
-                </option>
+                <option value="Tecnologia da Informação">Tecnologia da Informação</option>
                 <option value="Vendas">Vendas</option>
-
               </select>
-
             </div>
 
+            <div class="public-search-row">
+              <label class="sr-only" for="publicSearch">
+                Pesquisar vaga ou empresa
+              </label>
+
+              <input
+                id="publicSearch"
+                type="search"
+                placeholder="Pesquisar vaga ou empresa..."
+                autocomplete="off"
+                aria-label="Pesquisar vaga ou empresa"
+              >
+            </div>
           </div>
 
+          <div class="jobs-main-columns">
+            <section class="jobs-list-column" aria-label="Lista de vagas">
+              <div class="jobs-list-heading">
+                <p class="jobs-result-count" id="jobsResultCount"></p>
+              </div>
 
-          <!-- Pesquisa por vaga ou empresa -->
+              <div class="public-job-grid" id="publicJobsList"></div>
 
-          <div class="public-search-row">
+              <div class="empty-state" id="publicEmptyState" hidden>
+                <h2>Nenhuma vaga disponível</h2>
+                <p>Não encontramos oportunidades com os filtros selecionados.</p>
+              </div>
+            </section>
 
-            <label
-              class="sr-only"
-              for="publicSearch"
-            >
-              Pesquisar vaga ou empresa
-            </label>
-
-            <input
-              id="publicSearch"
-              type="search"
-              placeholder="Pesquisar vaga ou empresa..."
-              autocomplete="off"
-              aria-label="Pesquisar vaga ou empresa"
-            >
-
+            <aside
+              class="job-details-panel"
+              id="jobDetailsPanel"
+              aria-live="polite"
+              aria-label="Detalhes da vaga"
+              hidden
+            ></aside>
           </div>
-
-
-          <!-- Quantidade de vagas encontradas -->
-
-          <p
-            class="jobs-result-count"
-            id="jobsResultCount"
-          ></p>
-
-
-          <!-- Local onde os cards serão inseridos -->
-
-          <div
-            class="public-job-grid"
-            id="publicJobsList"
-          ></div>
-
-
-          <!-- Mensagem exibida quando não houver resultado -->
-
-          <div
-            class="empty-state"
-            id="publicEmptyState"
-            hidden
-          >
-
-            <h2>Nenhuma vaga disponível</h2>
-
-            <p>
-              Não encontramos oportunidades com os filtros selecionados.
-            </p>
-
-          </div>
-
-        </div>
-
+        </section>
       </div>
-
     </section>
-
   </main>
 
-
-  <!-- ======================================================
-       RODAPÉ
-  ======================================================= -->
-
   <footer class="footer">
-
     <div class="container footer-grid">
-
       <div>
-
-        <a
-          class="logo footer-logo"
-          href="index.html"
-        >
-          <img
-            src="img/logo-foz-talentos-rodape.png"
-            alt="Foz Talentos"
-          >
+        <a class="logo footer-logo" href="index.html">
+          <img src="img/logo-foz-talentos-rodape.png" alt="Foz Talentos">
         </a>
 
-        <p>
-          Conectamos talentos às melhores oportunidades.
-        </p>
-
+        <p>Conectamos talentos às melhores oportunidades.</p>
       </div>
 
-
       <div>
-
         <strong>Navegação</strong>
-
         <a href="index.html">Início</a>
         <a href="sobre.html">Sobre</a>
         <a href="servicos.html">Serviços</a>
         <a href="vagas.html">Vagas</a>
         <a href="contato.html">Contato</a>
-
       </div>
 
-
       <div>
-
         <strong>Contato</strong>
-
         <span>(61) 98135-7318</span>
         <span>Foztalentos@gmail.com</span>
         <span>Foz do Iguaçu - PR</span>
-
       </div>
-
     </div>
-
 
     <div class="container copyright">
       © 2026 Foz Talentos. Todos os direitos reservados.
     </div>
-
   </footer>
-
-
-  <!-- ======================================================
-       MODAL DE DETALHES DA VAGA
-  ======================================================= -->
-
-  <div
-    class="modal"
-    id="jobDetailsModal"
-    aria-hidden="true"
-  >
-
-    <div
-      class="modal-backdrop"
-      data-close-details
-    ></div>
-
-    <section
-      class="modal-card public-details"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="detailsTitle"
-    >
-
-      <div class="modal-header">
-
-        <div>
-
-          <span class="eyebrow">
-            DETALHES DA VAGA
-          </span>
-
-          <h2 id="detailsTitle"></h2>
-
-        </div>
-
-        <button
-          class="modal-close"
-          type="button"
-          data-close-details
-          aria-label="Fechar"
-        >
-          ×
-        </button>
-
-      </div>
-
-      <div id="jobDetailsContent"></div>
-
-    </section>
-
-  </div>
-
-
-  <!-- ======================================================
-       ARQUIVOS JAVASCRIPT
-  ======================================================= -->
 
   <script src="js/vagas-service.js"></script>
   <script src="js/vagas.js"></script>
   <script src="js/filtros-vagas.js"></script>
-
 </body>
-
 </html>
