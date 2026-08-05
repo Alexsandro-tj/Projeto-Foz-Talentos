@@ -3437,6 +3437,87 @@ p {
     padding-right: 18px !important;
   }
 }
+
+
+/* =========================================================
+   AJUSTES MOBILE GERAIS
+   ========================================================= */
+
+@media (max-width: 900px) {
+  /* Esconde a foto e os indicadores da página inicial somente no celular */
+  .hero .hero-visual {
+    display: none !important;
+  }
+
+  .hero .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero {
+    padding: 34px 0 48px !important;
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero-content > p {
+    margin-inline: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  /* Menu móvel compartilhado por todas as páginas */
+  .header {
+    overflow: visible !important;
+  }
+
+  .header .nav {
+    position: relative;
+  }
+
+  .header .menu-button {
+    position: relative;
+    z-index: 1004;
+    display: block !important;
+    margin-left: auto;
+  }
+
+  .header .nav-links {
+    position: absolute !important;
+    top: 68px !important;
+    right: 0 !important;
+    left: 0 !important;
+    z-index: 1003 !important;
+
+    display: none !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+
+    padding: 12px 16px 18px !important;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    box-shadow: 0 14px 28px rgba(16, 24, 40, .14);
+  }
+
+  .header .nav-links.open {
+    display: flex !important;
+  }
+
+  .header .nav-links a {
+    width: 100%;
+    padding: 13px 10px;
+    border-radius: 8px;
+  }
+
+  .header .nav-links a:hover {
+    background: #f1f6ff;
+  }
+}
+
 /* =========================================================
    VAGAS INTERATIVAS — AJUSTE FINAL
    Este arquivo é carregado depois de styles.css.
@@ -3821,4 +3902,411 @@ p {
   .jobs .job-details-panel {
     margin-top: 0 !important;
   }
+}
+
+
+/* =========================================================
+   MOBILE — MENU E FILTROS RECOLHIDOS
+   ========================================================= */
+
+.mobile-filter-button,
+.mobile-filter-header,
+.apply-mobile-filters,
+.mobile-filter-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  body.mobile-filters-open {
+    overflow: hidden;
+  }
+
+  .jobs .jobs-layout {
+    display: block !important;
+  }
+
+  .jobs .jobs-browser {
+    width: 100% !important;
+  }
+
+  .jobs .mobile-filter-button {
+    width: 100%;
+    min-height: 42px;
+    margin: 0 0 12px;
+    padding: 0 15px;
+    border: 1px solid var(--blue);
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #fff;
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .jobs .mobile-filter-button span {
+    font-size: 19px;
+  }
+
+  .jobs .jobs-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1002 !important;
+    width: min(92vw, 380px) !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    padding: 18px 20px 22px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    border: 0 !important;
+    border-radius: 0 16px 16px 0 !important;
+    background: #fff !important;
+    box-shadow: 18px 0 48px rgba(5, 25, 58, .18) !important;
+    transform: translateX(-105%) !important;
+    visibility: hidden !important;
+    transition:
+      transform .25s ease,
+      visibility .25s ease !important;
+  }
+
+  .jobs .jobs-sidebar.mobile-open {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+  }
+
+  .jobs .mobile-filter-header {
+    position: sticky;
+    top: -18px;
+    z-index: 3;
+    margin: -18px -20px 18px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #e5eaf1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+  }
+
+  .jobs .mobile-filter-header strong {
+    font-size: 20px;
+  }
+
+  .jobs .mobile-filter-close {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #f1f5fb;
+    color: #10203d;
+    font-size: 27px;
+  }
+
+  .jobs .jobs-sidebar h3 {
+    margin-bottom: 10px !important;
+    font-size: 17px !important;
+  }
+
+  .jobs .jobs-sidebar label {
+    min-height: 30px !important;
+    margin-bottom: 5px !important;
+    font-size: 15px !important;
+  }
+
+  .jobs .jobs-sidebar input[type="checkbox"],
+  .jobs .jobs-sidebar input[type="radio"] {
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px !important;
+  }
+
+  .jobs .jobs-sidebar hr {
+    margin: 15px 0 !important;
+  }
+
+  .jobs .apply-mobile-filters {
+    position: sticky;
+    bottom: -22px;
+    z-index: 3;
+    width: calc(100% + 40px);
+    min-height: 50px;
+    margin: 18px -20px -22px;
+    border-radius: 0;
+    display: flex;
+  }
+
+  .jobs .mobile-filter-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    display: block;
+    background: rgba(4, 18, 40, .48);
+    backdrop-filter: blur(2px);
+  }
+
+  .jobs .mobile-filter-backdrop[hidden] {
+    display: none !important;
+  }
+
+  .jobs .jobs-toolbar {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .jobs .jobs-toolbar .public-search-row {
+    grid-column: auto !important;
+  }
+
+  .jobs .jobs-main-columns,
+  .jobs .jobs-main-columns.details-closed {
+    grid-template-columns: 1fr !important;
+  }
+
+  .jobs .jobs-main-columns.details-closed .jobs-list-column {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .jobs .job-details-panel {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 12px !important;
+    max-height: none !important;
+  }
+
+  .header {
+    overflow: visible;
+  }
+
+  .header .nav {
+    position: relative;
+  }
+
+  .header .menu-button {
+    position: relative;
+    z-index: 1004;
+    display: block !important;
+    margin-left: auto;
+  }
+
+  .header .nav-links {
+    position: absolute !important;
+    top: 68px !important;
+    right: 0 !important;
+    left: 0 !important;
+    z-index: 1003 !important;
+    padding: 12px 16px 18px !important;
+    border-bottom: 1px solid #e5eaf1;
+    display: none !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+    background: #fff;
+    box-shadow: 0 14px 28px rgba(16, 24, 40, .14);
+  }
+
+  .header .nav-links.open {
+    display: flex !important;
+  }
+
+  .header .nav-links a {
+    width: 100%;
+    padding: 13px 10px;
+    border-radius: 8px;
+  }
+
+  .header .nav-links a:hover {
+    background: #f1f6ff;
+  }
+}
+
+
+
+/* =========================================================
+   CORREÇÃO MOBILE — PAINEL ADMINISTRATIVO
+   ========================================================= */
+
+/* Impede que a logo do painel use o width: 100% aplicado às imagens */
+.admin-header .logo img {
+  width: 150px;
+  max-width: 150px;
+  height: auto;
+  max-height: 58px;
+  object-fit: contain;
+}
+
+@media (max-width: 720px) {
+  .admin-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+  }
+
+  .admin-header-inner {
+    min-height: auto;
+    padding: 10px 0 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .admin-header .logo {
+    margin-right: auto;
+  }
+
+  .admin-header .logo img {
+    width: 118px;
+    max-width: 118px;
+    max-height: 46px;
+  }
+
+  .admin-header-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .admin-header-actions .button {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .admin-dashboard {
+    width: min(100% - 24px, 1180px);
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+
+  .admin-welcome {
+    margin-bottom: 20px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .admin-welcome h1 {
+    font-size: 1.75rem;
+  }
+
+  .admin-welcome .button {
+    width: 100%;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .admin-stats article {
+    padding: 14px 8px;
+    text-align: center;
+  }
+
+  .admin-stats span {
+    font-size: 0.72rem;
+  }
+
+  .admin-stats strong {
+    font-size: 1.45rem;
+  }
+
+  .admin-panel-card {
+    border-radius: 14px;
+  }
+
+  .admin-toolbar {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .admin-job-row {
+    padding: 16px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .admin-job-title-line {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .admin-job-actions {
+    width: 100%;
+  }
+
+  .admin-job-actions .icon-action {
+    flex: 1;
+  }
+
+  .modal {
+    padding: 8px;
+    align-items: start;
+  }
+
+  .modal.open {
+    place-items: start center;
+  }
+
+  .modal-card {
+    width: 100%;
+    max-height: calc(100dvh - 16px);
+    margin: 0;
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .modal-header {
+    margin-bottom: 16px;
+  }
+
+  .job-form {
+    gap: 14px;
+  }
+
+  .form-grid.two,
+  .form-grid.three {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-actions {
+    position: sticky;
+    bottom: -18px;
+    z-index: 2;
+    margin: 6px -18px -18px;
+    padding: 12px 18px;
+    flex-direction: column-reverse;
+    background: #ffffff;
+    border-top: 1px solid var(--line);
+  }
+
+  .modal-actions .button {
+    width: 100%;
+  }
+}
+
+/* ============================
+   SOBRE - MOBILE
+============================ */
+
+@media (max-width: 900px) {
+
+  .about-image{
+    display: none;
+  }
+
+  .about .two-columns{
+    display: block;
+  }
+
 }

@@ -38,6 +38,7 @@
         <a href="sobre.html">Sobre</a>
         <a href="servicos.html">Serviços</a>
         <a href="contato.html">Contato</a>
+        <a href="vagas.html">Vagas</a>
         <a class="admin-link" href="admin-login.html">Login ADM</a>
       </nav>
 
@@ -51,7 +52,20 @@
     <section class="section jobs">
       <div class="container jobs-layout">
 
-        <aside class="jobs-sidebar">
+        <aside
+          class="jobs-sidebar"
+          id="jobsSidebar"
+          aria-label="Filtros de vagas"
+        >
+          <div class="mobile-filter-header">
+            <strong>Filtros</strong>
+            <button
+              class="mobile-filter-close"
+              id="mobileFilterClose"
+              type="button"
+              aria-label="Fechar filtros"
+            >×</button>
+          </div>
           <div class="filter-group">
             <h3>Modalidade</h3>
 
@@ -190,9 +204,35 @@
           <button id="clearFilters" class="btn-outline" type="button">
             Limpar filtros
           </button>
+
+          <button
+            id="applyMobileFilters"
+            class="button button-primary apply-mobile-filters"
+            type="button"
+          >
+            Aplicar filtros
+          </button>
         </aside>
 
+        <div
+          class="mobile-filter-backdrop"
+          id="mobileFilterBackdrop"
+          hidden
+        ></div>
+
         <section class="jobs-browser" aria-label="Navegador de vagas">
+
+          <button
+            class="mobile-filter-button"
+            id="mobileFilterButton"
+            type="button"
+            aria-controls="jobsSidebar"
+            aria-expanded="false"
+          >
+            <span aria-hidden="true">☷</span>
+            Filtros
+          </button>
+
           <div class="jobs-toolbar">
             <div class="select-native-wrapper">
               <label class="sr-only" for="publicStateFilter">
@@ -332,5 +372,7 @@
   <script src="js/vagas-service.js"></script>
   <script src="js/vagas.js"></script>
   <script src="js/filtros-vagas.js"></script>
+  <script src="js/vagas-mobile.js"></script>
+  <script src="js/menu.js"></script>
 </body>
 </html>
