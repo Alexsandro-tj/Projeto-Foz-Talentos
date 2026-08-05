@@ -48,12 +48,91 @@
         <span>📍 Foz do Iguaçu - PR</span>
       </div>
     </div>
-    <form class="contact-form">
-      <label>Nome<input type="text" placeholder="Seu nome" required></label>
-      <label>E-mail<input type="email" placeholder="voce@email.com" required></label>
-      <label>Telefone<input type="tel" placeholder="(61) 98135-7318"></label>
-      <label>Mensagem<textarea rows="5" placeholder="Como podemos ajudar?" required></textarea></label>
-      <button class="button button-primary" type="submit">Enviar mensagem</button>
+    <form
+      class="contact-form"
+      id="contact-form"
+      action="https://formsubmit.co/ajax/Foztalentosoficial@gmail.com"
+      method="POST"
+    >
+      <label>
+        Nome
+        <input
+          type="text"
+          name="Nome"
+          placeholder="Seu nome"
+          required
+        >
+      </label>
+
+      <label>
+        E-mail
+        <input
+          type="email"
+          name="Email"
+          placeholder="voce@email.com"
+          required
+        >
+      </label>
+
+      <label>
+        Telefone
+        <input
+          type="tel"
+          name="Telefone"
+          placeholder="(61) 98135-7318"
+        >
+      </label>
+
+      <label>
+        Mensagem
+        <textarea
+          name="Mensagem"
+          rows="5"
+          placeholder="Como podemos ajudar?"
+          required
+        ></textarea>
+      </label>
+
+      <input
+        type="hidden"
+        name="_subject"
+        value="Nova mensagem pelo site Foz Talentos"
+      >
+
+      <input
+        type="hidden"
+        name="_template"
+        value="table"
+      >
+
+      <input
+        type="hidden"
+        name="_captcha"
+        value="false"
+      >
+
+      <input
+        type="text"
+        name="_honey"
+        class="campo-anti-spam"
+        tabindex="-1"
+        autocomplete="off"
+      >
+
+      <button
+        class="button button-primary"
+        id="submit-button"
+        type="submit"
+      >
+        Enviar mensagem
+      </button>
+
+      <p
+        class="form-message"
+        id="form-message"
+        role="status"
+        aria-live="polite"
+      ></p>
     </form>
   </div>
 </section>
@@ -84,5 +163,7 @@
   </div>
   <div class="container copyright">© 2026 Foz Talentos. Todos os direitos reservados.</div>
 </footer>
+
+<script src="/foz-talentos-front-end/js/contato.js"></script>
 </body>
 </html>
