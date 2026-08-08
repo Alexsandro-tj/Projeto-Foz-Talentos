@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vagas disponíveis na Foz Talentos.">
+  <title>Vagas | Foz Talentos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/vagas-interativas.css">
+</head>
+
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a class="logo" href="index.html">
+        <img src="img/logo-foz-talentos.png" alt="Foz Talentos">
+      </a>
+
+      <button
+        class="menu-button"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        id="menuButton"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="servicos.html">Serviços</a>
+        <a href="contato.html">Contato</a>
+        <a href="vagas.html">Ver vagas</a>
+        <a class="admin-link" href="admin-login.html">Login ADM</a>
+      </nav>
+
+      <a class="button button-primary nav-cta" href="vagas.html">
+        Ver vagas
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section jobs">
+      <div class="container jobs-layout">
+
+        <aside
+          class="jobs-sidebar"
+          id="jobsSidebar"
+          aria-label="Filtros de vagas"
+        >
+          <div class="mobile-filter-header">
+            <strong>Filtros</strong>
+            <button
+              class="mobile-filter-close"
+              id="mobileFilterClose"
+              type="button"
+              aria-label="Fechar filtros"
+            >×</button>
+          </div>
+          <div class="filter-group">
+            <h3>Modalidade</h3>
+
+            <label>
+              <input type="checkbox" class="modalidade-filter" value="Remoto">
+              Remoto
+            </label>
+
+            <label>
+              <input type="checkbox" class="modalidade-filter" value="Presencial">
+              Presencial
+            </label>
+
+            <label>
+              <input type="checkbox" class="modalidade-filter" value="Híbrido">
+              Híbrido
+            </label>
+          </div>
+
+          <hr>
+
+          <div class="filter-group">
+            <h3>Modelo de contrato</h3>
+
+            <label>
+              <input type="checkbox" class="contrato-filter" value="Temporário">
+              Temporário
+            </label>
+
+            <label>
+              <input type="checkbox" class="contrato-filter" value="Efetivo">
+              Efetivo
+            </label>
+          </div>
+
+          <hr>
+
+          <div class="filter-group">
+            <h3>Nível de experiência</h3>
+
+            <label>
+              <input type="checkbox" class="experiencia-filter" value="Estágio">
+              Estágio
+            </label>
+
+            <label>
+              <input type="checkbox" class="experiencia-filter" value="Júnior">
+              Júnior
+            </label>
+
+            <label>
+              <input type="checkbox" class="experiencia-filter" value="Pleno">
+              Pleno
+            </label>
+
+            <label>
+              <input type="checkbox" class="experiencia-filter" value="Sênior">
+              Sênior
+            </label>
+
+            <label>
+              <input type="checkbox" class="experiencia-filter" value="Especialista">
+              Especialista
+            </label>
+          </div>
+
+          <hr>
+
+          <div class="filter-group">
+            <h3>Publicação</h3>
+
+            <label>
+              <input type="radio" name="publicacao" class="date-filter" value="" checked>
+              Todas
+            </label>
+
+            <label>
+              <input type="radio" name="publicacao" class="date-filter" value="today">
+              Hoje
+            </label>
+
+            <label>
+              <input type="radio" name="publicacao" class="date-filter" value="7">
+              Últimos 7 dias
+            </label>
+
+            <label>
+              <input type="radio" name="publicacao" class="date-filter" value="15">
+              Últimos 15 dias
+            </label>
+
+            <label>
+              <input type="radio" name="publicacao" class="date-filter" value="30">
+              Últimos 30 dias
+            </label>
+          </div>
+
+          <hr>
+
+          <div class="filter-group salary-filter-group">
+            <h3>Faixa salarial</h3>
+
+            <div class="salary-values">
+              <span id="salaryMinText">R$ 0</span>
+              <span id="salaryMaxText">R$ 20.000</span>
+            </div>
+
+            <div class="double-range">
+              <div class="range-track"></div>
+              <div class="range-progress" id="salaryRangeProgress"></div>
+
+              <input
+                type="range"
+                id="salaryMinFilter"
+                class="salary-range salary-range-min"
+                min="0"
+                max="20000"
+                step="500"
+                value="0"
+                aria-label="Salário mínimo"
+              >
+
+              <input
+                type="range"
+                id="salaryMaxFilter"
+                class="salary-range salary-range-max"
+                min="0"
+                max="20000"
+                step="500"
+                value="20000"
+                aria-label="Salário máximo"
+              >
+            </div>
+          </div>
+
+          <button id="clearFilters" class="btn-outline" type="button">
+            Limpar filtros
+          </button>
+
+          <button
+            id="applyMobileFilters"
+            class="button button-primary apply-mobile-filters"
+            type="button"
+          >
+            Aplicar filtros
+          </button>
+        </aside>
+
+        <div
+          class="mobile-filter-backdrop"
+          id="mobileFilterBackdrop"
+          hidden
+        ></div>
+
+        <section class="jobs-browser" aria-label="Navegador de vagas">
+
+          <button
+            class="mobile-filter-button"
+            id="mobileFilterButton"
+            type="button"
+            aria-controls="jobsSidebar"
+            aria-expanded="false"
+          >
+            <span aria-hidden="true">☷</span>
+            Filtros
+          </button>
+
+          <div class="jobs-toolbar">
+            <div class="select-native-wrapper">
+              <label class="sr-only" for="publicStateFilter">
+                Filtrar por estado
+              </label>
+
+              <select id="publicStateFilter" aria-label="Filtrar por estado">
+                <option value="">Todos os estados</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+              </select>
+            </div>
+
+            <div class="select-native-wrapper">
+              <label class="sr-only" for="publicAreaFilter">
+                Filtrar por área
+              </label>
+
+              <select id="publicAreaFilter" aria-label="Filtrar por área">
+                <option value="">Todas as áreas</option>
+                <option value="Administrativo">Administrativo</option>
+                <option value="Atendimento">Atendimento</option>
+                <option value="Comercial">Comercial</option>
+                <option value="Contabilidade">Contabilidade</option>
+                <option value="Engenharia">Engenharia</option>
+                <option value="Financeiro">Financeiro</option>
+                <option value="Jurídico">Jurídico</option>
+                <option value="Logística">Logística</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Produção">Produção</option>
+                <option value="Recursos Humanos">Recursos Humanos</option>
+                <option value="Saúde">Saúde</option>
+                <option value="Tecnologia da Informação">Tecnologia da Informação</option>
+                <option value="Vendas">Vendas</option>
+              </select>
+            </div>
+
+            <div class="public-search-row">
+              <label class="sr-only" for="publicSearch">
+                Pesquisar vaga ou empresa
+              </label>
+
+              <input
+                id="publicSearch"
+                type="search"
+                placeholder="Pesquisar vaga ou empresa..."
+                autocomplete="off"
+                aria-label="Pesquisar vaga ou empresa"
+              >
+            </div>
+          </div>
+
+          <div class="jobs-main-columns">
+            <section class="jobs-list-column" aria-label="Lista de vagas">
+              <div class="jobs-list-heading">
+                <p class="jobs-result-count" id="jobsResultCount"></p>
+              </div>
+
+              <div class="public-job-grid" id="publicJobsList"></div>
+
+              <div class="empty-state" id="publicEmptyState" hidden>
+                <h2>Nenhuma vaga disponível</h2>
+                <p>Não encontramos oportunidades com os filtros selecionados.</p>
+              </div>
+            </section>
+
+            <aside
+              class="job-details-panel"
+              id="jobDetailsPanel"
+              aria-live="polite"
+              aria-label="Detalhes da vaga"
+              hidden
+            ></aside>
+
+            <div
+              class="job-details-backdrop"
+              id="jobDetailsBackdrop"
+              hidden
+            ></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="logo footer-logo" href="index.html">
+          <img src="img/logo-foz-talentos-rodape.png" alt="Foz Talentos">
+        </a>
+
+        <p>Conectamos talentos às melhores oportunidades.</p>
+      </div>
+
+      <div>
+        <strong>Navegação</strong>
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="servicos.html">Serviços</a>
+        <a href="vagas.html">Vagas</a>
+        <a href="contato.html">Contato</a>
+      </div>
+
+      <div>
+        <strong>Contato</strong>
+        <span>(61) 98135-7318</span>
+        <span>Foztalentos@gmail.com</span>
+        <span>Foz do Iguaçu - PR</span>
+      </div>
+    </div>
+
+    <div class="container copyright">
+      © 2026 Foz Talentos. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script src="js/vagas-service.js"></script>
+  <script src="js/vagas.js"></script>
+  <script src="js/filtros-vagas.js"></script>
+  <script src="js/vagas-mobile.js"></script>
+  <script src="js/menu.js"></script>
+</body>
+</html>
