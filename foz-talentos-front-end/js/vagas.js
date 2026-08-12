@@ -1,6 +1,8 @@
+import VagasService from "./vagas-service.js";
+
 "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const publicJobsList = document.getElementById("publicJobsList");
   const publicEmptyState = document.getElementById("publicEmptyState");
   const jobsResultCount = document.getElementById("jobsResultCount");
@@ -35,19 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  if (!window.VagasService) {
-    console.error(
-      "VagasService não foi carregado. Verifique js/vagas-service.js."
-    );
-    return;
-  }
-
   let salarioMinimoSelecionado =
     Number(salaryMinFilter?.value ?? 0);
 
   let salarioMaximoSelecionado =
     Number(salaryMaxFilter?.value ?? 20000);
 
+  let vagas = [];
   let vagasVisiveis = [];
   let vagaSelecionadaId = null;
 
@@ -219,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function vagaCorrespondeAoSalario(vaga) {
     const salarioDaVaga =
-      obterSalarioNumerico(vaga.salario);
+      obterSalarioNumerico(vaga.salarioValor ?? vaga.salario);
 
     if (salarioDaVaga === null) {
       return true;
@@ -593,12 +589,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function aplicarFiltros() {
     const vagasAtivas =
-      VagasService
-        .listar()
-        .filter(
-          (vaga) =>
-            normalizarTexto(vaga.status) === "ativa"
-        );
+      vagas.filter((vaga) => vaga.ativa === true);
 
     const termoPesquisado =
       normalizarTexto(searchInput?.value);
@@ -838,5 +829,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   jobsMainColumns.classList.add("details-closed");
   jobDetailsPanel.hidden = true;
-  aplicarFiltros();
+
+  try {
+    vagas = await VagasService.carregarVagas();
+    console.log("Vagas carregadas da API:", vagas);
+    aplicarFiltros();
+  } catch (error) {
+    console.error("Não foi possível carregar as vagas da API.", error);
+    atualizarEstadoDaLista(0, false);
+  }
 });
