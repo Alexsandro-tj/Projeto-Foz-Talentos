@@ -50,7 +50,7 @@ Entre as principais funcionalidades estão:
 * Visual Studio Code
 * Git
 * GitHub
-* Railway
+* Railway para testes de deploy e integração
 * Swagger / OpenAPI
 
 ### 🔐 Segurança
