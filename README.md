@@ -72,6 +72,6 @@ Caio - Backend
 
 Alex - Tech Lead e conexão da api ao frontend
 
-Gisele e Harley- Frontend
+Gisele e Harley - Frontend
 
 Angélica e Letícia - QAs
