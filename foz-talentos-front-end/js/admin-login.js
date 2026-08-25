@@ -43,8 +43,18 @@ form.addEventListener("submit", event => {
     return;
   }
 
+  // Remove uma autenticação anterior de ambos os armazenamentos
+  sessionStorage.removeItem("fozAdminAutenticado");
+  sessionStorage.removeItem("fozAdminEmail");
+
+  localStorage.removeItem("fozAdminAutenticado");
+  localStorage.removeItem("fozAdminEmail");
+
+  // Salva a nova sessão conforme a escolha do usuário
   const storage = lembrar.checked ? localStorage : sessionStorage;
+
   storage.setItem("fozAdminAutenticado", "true");
+  storage.setItem("fozAdminEmail", email);
   storage.setItem("fozAdminEmail", email);
   mostrarMensagem("Login realizado. Redirecionando...", "success");
   window.setTimeout(() => window.location.assign("admin-painel.html"), 350);
