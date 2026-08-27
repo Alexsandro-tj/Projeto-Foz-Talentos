@@ -1,36 +1,77 @@
+# 🚀 Foz Talentos
 
-# 🚀 Nome do Projeto
-
-> Uma linha curta e impactante descrevendo o que este projeto faz ou qual problema ele resolve.
+> Plataforma de gerenciamento e divulgação de vagas de emprego, desenvolvida para conectar empresas e candidatos e facilitar a administração das oportunidades disponíveis.
 
 ---
 
 ## 💻 Sobre o Projeto
 
-Uma descrição um pouco mais detalhada sobre o projeto. Explique o contexto, o motivo de ter criado este sistema (por exemplo, se é um sistema de PDV, um portfólio, um clone de algum serviço ou um desafio técnico) e os principais objetivos alcançados.
+O **Foz Talentos** é uma plataforma web para publicação, consulta e gerenciamento de vagas de emprego.
+
+O sistema possui um backend responsável pelo gerenciamento de vagas, categorias e administradores, além de autenticação e controle de acesso por diferentes níveis de permissão.
+
+Entre as principais funcionalidades estão:
+
+* Cadastro, edição e consulta de vagas;
+* Ativação e desativação de vagas;
+* Cadastro e gerenciamento de categorias;
+* Autenticação de administradores com **JWT**;
+* Controle de acesso por funções (**MASTER** e **EMPLOYEE**);
+* Gerenciamento de administradores;
+* Filtros de vagas por cargo, estado, categoria, modalidade, nível, tipo de contrato, faixa salarial e período de publicação;
+* Paginação e ordenação dos resultados;
+* Documentação da API através do **Swagger/OpenAPI**;
+* Banco de dados MySQL hospedado em ambiente de produção.
 
 ### 🛠️ Tecnologias Utilizadas
 
-O projeto foi construído utilizando as seguintes tecnologias:
+**Backend**
 
-*   **Backend:** PHP
-*   **Frontend:** HTML5, CSS3, JavaScript
-*   **Banco de Dados:** MySQL
-*   **Ferramentas:** VS Code, Git e GitHub
+* Java 21
+* Spring Boot
+* Spring Security
+* Spring Data JPA
+* JWT
+* Maven
 
----
+**Frontend**
 
-## ⚙️ Como Executar o Projeto
+* HTML5
+* CSS3
+* JavaScript
 
-Siga os passos abaixo para rodar o projeto localmente em sua máquina.
+**Banco de Dados**
 
-### Pré-requisitos
-Antes de começar, você vai precisar ter instalado:
-*   Um servidor local (como XAMPP, WampServer or Laragon) com **PHP** e **MySQL**.
-*   **Git** para clonar o repositório.
+* MySQL
 
-### Passo a Passo
+**Ferramentas e Infraestrutura**
 
-1. **Clonar o Repositório:**
-   ```bash
-   git clone https://github.com/Alexsandro-tj/Projeto-Foz-Talentos.git
+* IntelliJ IDEA
+* Visual Studio Code
+* Git
+* GitHub
+* Railway para testes de deploy e integração
+* Swagger / OpenAPI
+
+### 🔐 Segurança
+
+A API utiliza autenticação baseada em **JWT**.
+
+Os administradores possuem diferentes níveis de acesso:
+
+* **MASTER:** acesso completo ao gerenciamento administrativo;
+* **EMPLOYEE:** acesso às funcionalidades administrativas permitidas para funcionários, sem acesso ao gerenciamento de administradores.
+
+Endpoints protegidos exigem o envio do token JWT através do cabeçalho:
+
+`Authorization: Bearer <token>`
+
+## Criado por:
+
+Caio - Backend
+
+Alex - Tech Lead e conexão da api ao frontend
+
+Gisele e Harley - Frontend
+
+Angélica e Letícia - QAs

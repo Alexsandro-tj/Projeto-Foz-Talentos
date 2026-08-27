@@ -17,11 +17,15 @@ function transformarLista(valor) {
 function mapearExperiencia(level) {
   const niveis = {
     YOUNG_APPRENTICE: "Jovem Aprendiz",
-    INTERN: "Estágio",
+    INTERNSHIP: "Estágio",
+    TRAINEE: "Trainee",
     JUNIOR: "Júnior",
     MID_LEVEL: "Pleno",
     SENIOR: "Sênior",
-    COORDINATOR: "Coordenador"
+    SPECIALIST: "Especialista",
+    COORDINATOR: "Coordenador",
+    MANAGER: "Gerente",
+    DIRECTOR: "Diretor"
   };
 
   return niveis[level] ?? level ?? "";
@@ -44,27 +48,33 @@ function mapearVaga(vaga) {
     id: String(vaga?.id ?? ""),
     titulo: vaga?.title ?? "",
     empresa: vaga?.company ?? "",
-    cidade: vaga?.city ?? "",
+
+    cidade: "",
     estado: vaga?.state ?? "",
-    localizacao: vaga?.city && vaga?.state
-      ? `${vaga.city} - ${vaga.state}`
-      : (vaga?.state ?? vaga?.city ?? ""),
+    localizacao: vaga?.state ?? "",
+
     area: vaga?.category ?? "",
     categoria: vaga?.category ?? "",
+
     experiencia: mapearExperiencia(vaga?.level),
     contrato: vaga?.contractType ?? "",
     modalidade: mapearModalidade(vaga?.workMode),
+
     salario: vaga?.salary ?? "",
     salarioValor: Number(vaga?.salaryValue ?? 0),
+
     ativa: active,
     status: active ? "ativa" : "encerrada",
+
     descricao: vaga?.description ?? "",
     requisitos: transformarLista(vaga?.requirements),
     beneficios: transformarLista(vaga?.benefits),
     responsabilidades: [],
+
     telefone: vaga?.phone ?? "",
     whatsapp: vaga?.phone ?? WHATSAPP_OFICIAL,
     email: vaga?.email ?? "",
+
     criadoEm: vaga?.createdAt ?? "",
     atualizadoEm: vaga?.updatedAt ?? ""
   };
@@ -74,17 +84,12 @@ class VagasService {
   async carregarVagas() {
     try {
       const response = await api.get("/jobs");
-      const content = response.data?.content;
-
-      if (!Array.isArray(content)) {
-        console.error("Formato inesperado da API /jobs:", response.data);
-        return [];
-      }
+      const content = response.data?.content ?? [];
 
       return content.map(mapearVaga);
     } catch (error) {
       console.error("Erro ao buscar vagas na API:", error);
-      throw error;
+      return [];
     }
   }
 }
