@@ -81,7 +81,7 @@ function mapearVaga(vaga) {
     empresa: vaga?.company ?? "",
     cidade: vaga?.city ?? "",
     estado: vaga?.state ?? "",
-    localizacao: vaga?.city ? `${vaga.city} - ${vaga.state ?? ""}`.trim() : (vaga?.state ?? ""),
+    localizacao: vaga?.city ? `${vaga.city} - ${vaga.state ?? ""}`.trim() : "",
     area: vaga?.category?.name ?? vaga?.category ?? "",
     categoriaId: vaga?.categoryId ?? vaga?.category?.id ?? null,
     experiencia: mapearExperiencia(vaga?.level),
